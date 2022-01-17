@@ -61,7 +61,7 @@ if (!empty($_POST)) {
                 }
             }
             $_SESSION['TERMS'] = true;
-            $callBackend = true;
+            $_SESSION['BACKEND'] = true;
             break;
         }
         $errorMessage = 'Unsupported POST received.';
@@ -265,7 +265,7 @@ if (LG_BLOCK_CUSTOM) {
 </div>
 
 <script type="text/javascript">
-    <?php if (isset($callBackend)) { echo 'callBackend();'; } ?>
+    <?php if (isset($_SESSION['BACKEND'])) { echo 'callBackend();'; } ?>
     function callBackend() {
         const executeButton = document.getElementById('executeButton');
         executeButton.innerText = 'Executing...';
