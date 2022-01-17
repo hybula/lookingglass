@@ -42,6 +42,9 @@ You may also extend the looking glass with a custom block.
 - Implement a template engine, for advanced customization;
 - Switch to WebSockets.
 
+### Contribute
+We would love to receive code contributions in the form of a pull request. We prefer this over forking, so if you have any code improvements feel free to commit.
+
 ### Credits
 This project is inspired by the [LookingGlass project](https://github.com/telephone/LookingGlass) of @telephone and uses his procExecute() function, although slightly modified.
 
