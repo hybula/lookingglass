@@ -20,8 +20,8 @@ made user-friendly for everyone to use. It allows you to execute network related
 - IPv6 connectivity if you want to use the v6 equivalents.
 - Root access.
 
-### Installatio
-nFor this installation we will assume that we are working on AlmaLinux 8 OS. Warning: This guide does not cover any security hardening or rate limiting.
+### Installation
+For this installation we will assume that we are working on AlmaLinux 8 OS. Warning: This guide does not cover any security hardening or rate limiting.
 
 1. Install the required network tools: `dnf install mtr traceroute -y`.
 2. Install the web server with PHP (by default it will install 7.2): `dnf install httpd mod_ssl php -y`.
@@ -41,6 +41,9 @@ You may also extend the looking glass with a custom block.
 - Software-based rate limiting;
 - Implement a template engine, for advanced customization;
 - Switch to WebSockets.
+
+### Credits
+This project is inspired by the [LookingGlass project](https://github.com/telephone/LookingGlass) of @telephone and uses his procExecute() function, although slightly modified.
 
 ### License
 Mozilla Public License Version 2.0
