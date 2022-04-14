@@ -24,7 +24,7 @@ $detectIpAddress = LookingGlass::detectIpAddress();
 
 if (!empty($_POST)) {
     do {
-        if (!isset($_POST['csrfToken']) || ($_POST['csrfToken'] != $_SESSION['CSRF'])) {
+        if (!isset($_POST['csrfToken']) || !isset($_SESSION['CSRF']) || ($_POST['csrfToken'] != $_SESSION['CSRF'])) {
             $errorMessage = 'Missing or incorrect CSRF token.';
         break;
         }
