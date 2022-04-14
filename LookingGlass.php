@@ -311,14 +311,16 @@ class LookingGlass
             foreach ($pipes as $pipe) {
                 fclose($pipe);
             }
-            // retrieve parent pid
-            $ppid = $status['pid'];
-            // use ps to get all the children of this process
-            $pids = preg_split('/\s+/', `ps -o pid --no-heading --ppid $ppid`);
-            // kill remaining processes
-            foreach($pids as $pid) {
-                if (is_numeric($pid)) {
-                    posix_kill($pid, 9);
+            if ($status['pid']) {
+                // retrieve parent pid
+                //$ppid = $status['pid'];
+                // use ps to get all the children of this process
+                $pids = preg_split('/\s+/', 'ps -o pid --no-heading --ppid '.$status['pid']);
+                // kill remaining processes
+                foreach ($pids as $pid) {
+                    if (is_numeric($pid)) {
+                        posix_kill($pid, 9);
+                    }
                 }
             }
             proc_close($process);
