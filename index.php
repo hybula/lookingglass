@@ -26,7 +26,7 @@ if (!empty($_POST)) {
     do {
         if (!isset($_POST['csrfToken']) || !isset($_SESSION['CSRF']) || ($_POST['csrfToken'] != $_SESSION['CSRF'])) {
             $errorMessage = 'Missing or incorrect CSRF token.';
-        break;
+            break;
         }
         if (isset($_POST['submitForm'])) {
             if (!in_array($_POST['backendMethod'], LG_METHODS)) {
