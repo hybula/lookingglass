@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: hybula/lookingglass-nginx:1
+    build:
+      context: docker/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+  php-fpm:
+    image: hybula/lookingglass-php:1
+    build:
+      context: .
+      dockerfile: docker/php-fpm/Dockerfile
+    restart: unless-stopped
