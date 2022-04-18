@@ -110,7 +110,7 @@ class LookingGlass
                 if ($type == 'ipv4' && isset(dns_get_record($host, DNS_A)[0]['ip'])) {
                     return $host;
                 }
-                if ($type == 'ipv6' && isset(dns_get_record($host, DNS_AAAA)[0]['ip'])) {
+                if ($type == 'ipv6' && isset(dns_get_record($host, DNS_AAAA)[0]['ipv6'])) {
                     return $host;
                 }
                 return '';
