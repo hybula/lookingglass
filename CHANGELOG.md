@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.1] - 19-04-2022
 ### Fixed
 - Ping6/Traceroute6/MTR6 validation when using hostnames (PR #2).
-- 
+
 ## [1.0.0] - 14-04-2022
 ### Fixed
 - Undefined warning when refreshing a page after execution.
