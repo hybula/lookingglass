@@ -260,7 +260,7 @@ if (LG_BLOCK_CUSTOM) {
     </main>
     <footer class="pt-3 mt-5 my-5 text-muted border-top">
         Powered by <a href="https://github.com/hybula/lookingglass" target="_blank">Hybula Looking Glass</a>
-        <a href="https://github.com/hybula/lookingglass" target="_blank" class="float-end"><img src="https://img.shields.io/github/watchers/hybula/lookingglass?style=social" alt="GitHub Watchers"></a>
+        <a href="https://github.com/hybula/lookingglass" target="_blank" class="float-end"><img src="https://img.shields.io/github/stars/hybula/lookingglass?style=social" alt="GitHub"></a>
     </footer>
 </div>
 
