@@ -1,5 +1,5 @@
 # Looking Glass
-Modern, simple and fresh looking glass based on Bootstrap 5 and PHP 7. A looking glass is a network utility which is
+Modern, simple and fresh looking glass based on Bootstrap 5 and PHP 8 (also compatible with 7). A looking glass is a network utility which is
 made user-friendly for everyone to use. It allows you to execute network related commands within a remote network, usually that of an ISP.
 
 ![](screenshot.png)
@@ -15,13 +15,14 @@ made user-friendly for everyone to use. It allows you to execute network related
 - DNS checking to prevent unnecessary executions.
 
 ### Requirements
-- Any Linux distribution, this has been tested on RHEL.
-- PHP 7.1 or higher.
+- Any Linux distribution, this has been tested on RHEL 8 + 9.
+- PHP 7.1 or higher, PHP 8 preferred.
 - IPv6 connectivity if you want to use the v6 equivalents.
 - Root access.
 
 ### Installation
-For this installation we will assume that we are working on AlmaLinux 8 OS. Warning: This guide does not cover any security hardening or rate limiting.
+For this installation we will assume that we are working on AlmaLinux 8 or 9. Warning: This guide does not cover any security hardening or rate limiting.
+Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead of 7.
 
 1. Install the required network tools: `dnf install mtr traceroute -y`.
 2. Install the web server with PHP (by default it will install 7.2): `dnf install httpd mod_ssl php -y`.
