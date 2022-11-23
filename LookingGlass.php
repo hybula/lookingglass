@@ -111,17 +111,20 @@ class LookingGlass
         if (!substr_count($host, '.')) {
             return '';
         }
+
         if (filter_var('https://' . $host, FILTER_VALIDATE_URL)) {
             if ($host = parse_url('https://' . $host, PHP_URL_HOST)) {
-                if ($type == 'ipv4' && isset(dns_get_record($host, DNS_A)[0]['ip'])) {
+                if ($type === self::IPV4 && isset(dns_get_record($host, DNS_A)[0]['ip'])) {
                     return $host;
                 }
-                if ($type == 'ipv6' && isset(dns_get_record($host, DNS_AAAA)[0]['ipv6'])) {
+                if ($type === self::IPV6 && isset(dns_get_record($host, DNS_AAAA)[0]['ipv6'])) {
                     return $host;
                 }
+
                 return '';
             }
         }
+
         return '';
     }
 
@@ -134,6 +137,10 @@ class LookingGlass
      */
     public static function detectIpAddress(): string
     {
+        if (php_sapi_name() === 'cli') {
+            return '127.0.0.1';
+        }
+
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && filter_var($_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP)) {
             return $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
