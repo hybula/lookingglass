@@ -24,6 +24,13 @@ class LookingGlass
     public const SESSION_ERROR_MESSAGE = 'error_message';
     public const SESSION_CSRF          = 'CSRF';
 
+    public const METHOD_PING        = 'ping';
+    public const METHOD_PING6       = 'ping6';
+    public const METHOD_MTR         = 'mtr';
+    public const METHOD_MTR6        = 'mtr6';
+    public const METHOD_TRACEROUTE  = 'traceroute';
+    public const METHOD_TRACEROUTE6 = 'traceroute6';
+
     private const MTR_COUNT = 10;
 
     /**

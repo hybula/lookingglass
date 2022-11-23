@@ -28,24 +28,24 @@ if (isset($_SESSION[LookingGlass::SESSION_TARGET_HOST]) &&
     unset($_SESSION[LookingGlass::SESSION_CALL_BACKEND]);
 
 
-    switch ($_SESSION['METHOD']) {
-        case 'ping':
-            LookingGlass::ping($_SESSION['TARGET']);
+    switch ($_SESSION[LookingGlass::SESSION_TARGET_METHOD]) {
+        case LookingGlass::METHOD_PING:
+            LookingGlass::ping($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'ping6':
-            LookingGlass::ping6($_SESSION['TARGET']);
+        case LookingGlass::METHOD_PING6:
+            LookingGlass::ping6($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'mtr':
-            LookingGlass::mtr($_SESSION['TARGET']);
+        case LookingGlass::METHOD_MTR:
+            LookingGlass::mtr($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'mtr6':
-            LookingGlass::mtr6($_SESSION['TARGET']);
+        case LookingGlass::METHOD_MTR6:
+            LookingGlass::mtr6($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'traceroute':
-            LookingGlass::traceroute($_SESSION['TARGET']);
+        case LookingGlass::METHOD_TRACEROUTE:
+            LookingGlass::traceroute($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'traceroute6':
-            LookingGlass::traceroute6($_SESSION['TARGET']);
+        case LookingGlass::METHOD_TRACEROUTE6:
+            LookingGlass::traceroute6($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
     }
 }

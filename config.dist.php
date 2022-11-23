@@ -1,5 +1,5 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
+use Hybula\LookingGlass;
 
 // Define the HTML title;
 const LG_TITLE = 'Looking Glass';
@@ -36,7 +36,14 @@ const LG_IPV4 = '127.0.0.1';
 const LG_IPV6 = '::1';
 
 // Define the methods that can be used by visitors to test it out;
-const LG_METHODS = ['ping', 'ping6', 'mtr', 'mtr6', 'traceroute', 'traceroute6'];
+const LG_METHODS = [
+    LookingGlass::METHOD_PING,
+    LookingGlass::METHOD_PING6,
+    LookingGlass::METHOD_MTR,
+    LookingGlass::METHOD_MTR6,
+    LookingGlass::METHOD_TRACEROUTE,
+    LookingGlass::METHOD_TRACEROUTE6,
+];
 
 // Define other looking glasses, this is useful if you have multiple networks and looking glasses;
 const LG_LOCATIONS = [
