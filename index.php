@@ -269,7 +269,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
     </footer>
 </div>
 
-<?php if ($_SESSION[LookingGlass::SESSION_CALL_BACKEND]): ?>
+<?php if ($templateData['session_call_backend']): ?>
 <script type="text/javascript">
 	(function() {
 		const outputContent = document.getElementById('outputContent')
