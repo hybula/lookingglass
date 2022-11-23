@@ -25,13 +25,16 @@ For this installation we will assume that we are working on AlmaLinux 8 or 9. Wa
 Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead of 7.
 
 1. Install the required network tools: `dnf install mtr traceroute -y`.
-2. Install the web server with PHP (by default it will install 7.2): `dnf install httpd mod_ssl php -y`.
+2. Install the web server with PHP (by default it will install 7.2 on RHEL 8): `dnf install httpd mod_ssl php php-posix -y`.
 3. Enable and start Apache/PHP-FPM: `systemctl enable httpd; systemctl enable php-fpm` and `systemctl start httpd; systemctl start php-fpm`.
 4. Let's help MTR to work, execute the following command: `ln -s /usr/sbin/mtr /usr/bin/mtr` and also mtr helper called mtr-packet: `ln -s /usr/sbin/mtr-packet /usr/bin/mtr-packet`.
 5. You *must* configure SELinux before this all works, or you can disable SELinux using `setenforce 0` and possibly make it permanent: `nano /etc/selinux/config` change to `SELINUX=disabled`.
 6. Upload the contents of the ZIP to /var/www/html/.
 7. Rename config.dist.php to config.php and adjust the settings.
 8. (Optional) You might want to enable SSL using LetsEncrypt, take a look at [acme.sh](https://github.com/acmesh-official/acme.sh).
+
+### Upgrading
+Upgrading from a previous version is easy, simply overwrite your current installation with the new files. Then update your config.php accordingly, the script will automatically check for missing variables.
 
 ### Customization
 If you open up config.dist.php you will see that there are some features that allows you to customize the looking glass, this includes a custom CSS override.
