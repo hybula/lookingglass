@@ -52,6 +52,7 @@ class LookingGlass
         if (!defined('LG_CUSTOM_HTML')) die('LG_CUSTOM_HTML not found in config.php');
         if (!defined('LG_CUSTOM_PHP')) die('LG_CUSTOM_PHP not found in config.php');
         if (!defined('LG_LOCATION')) die('LG_LOCATION not found in config.php');
+        if (!defined('LG_MAPS_QUERY')) die('LG_MAPS_QUERY not found in config.php');
         if (!defined('LG_FACILITY')) die('LG_FACILITY not found in config.php');
         if (!defined('LG_FACILITY_URL')) die('LG_FACILITY_URL not found in config.php');
         if (!defined('LG_IPV4')) die('LG_IPV4 not found in config.php');

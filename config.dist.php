@@ -26,6 +26,8 @@ const LG_CUSTOM_PHP = __DIR__.'/custom.post.php';
 
 // Define the location of this network, usually a city and a country;
 const LG_LOCATION = 'Amsterdam, Netherlands';
+// Define a query location for the link to openstreetmap (eg: Amsterdam, Netherlands will be https://www.openstreetmap.org/search?query=Amsterdam, Netherlands)
+const LG_MAPS_QUERY = 'Amsterdam, Netherlands';
 // Define the facility where the network is located, usually a data center;
 const LG_FACILITY = 'Nikhef';
 // Define a direct link to more information about the facility, this should be a link to PeeringDB;
