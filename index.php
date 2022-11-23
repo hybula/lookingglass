@@ -266,26 +266,58 @@ if (LG_BLOCK_CUSTOM) {
     </footer>
 </div>
 
+<?php if ($_SESSION[LookingGlass::SESSION_CALL_BACKEND]): ?>
 <script type="text/javascript">
-    <?php if (isset($_SESSION['BACKEND'])) { echo 'callBackend();'; } ?>
-    function callBackend() {
-        const executeButton = document.getElementById('executeButton');
-        executeButton.innerText = 'Executing...';
-        executeButton.disabled = true;
-        document.getElementById('outputCard').style.display = 'inherit';
-        const xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            document.getElementById('outputContent').innerHTML = this.responseText.replace(/<br \/> +/g, '<br />');
-            if (this.readyState === XMLHttpRequest.DONE) {
-                executeButton.innerText = 'Execute';
-                executeButton.disabled = false;
-                console.log('Backend ready!');
-            }
-        };
-        xhr.open('GET', 'backend.php', true);
-        xhr.send();
-    }
+	(function() {
+		const outputContent = document.getElementById('outputContent')
+		const executeButton = document.getElementById('executeButton')
+		const outputCard = document.getElementById('outputCard')
+
+		executeButton.innerText = 'Executing...'
+		executeButton.disabled = true
+
+		outputCard.style.display = 'inherit'
+
+		fetch('/backend.php')
+			.then(async (response) => {
+				// response.body is a ReadableStream
+				const reader = response.body.getReader()
+				const decoder = new TextDecoder()
+
+				for await (const chunk of readChunks(reader)) {
+					const text = decoder.decode(chunk)
+                    <?php if(in_array($_SESSION[LookingGlass::SESSION_TARGET_METHOD], [LookingGlass::METHOD_MTR, LookingGlass::METHOD_MTR6])): ?>
+                    let splittedText = text.split('---')
+					if(!splittedText[1]) {
+						continue
+					}
+					outputContent.innerHTML = splittedText[1].trim()
+                    <?php else: ?>
+					outputContent.innerHTML = outputContent.innerHTML + text.trim().replace(/<br \/> +/g, '<br />')
+                    <?php endif ?>
+				}
+			})
+			.finally(() => {
+				executeButton.innerText = 'Execute'
+				executeButton.disabled = false
+				console.log('Backend ready!')
+			})
+	})()
+
+	// readChunks() reads from the provided reader and yields the results into an async iterable
+	function readChunks(reader) {
+		return {
+			async* [Symbol.asyncIterator]() {
+				let readResult = await reader.read()
+				while (!readResult.done) {
+					yield readResult.value
+					readResult = await reader.read()
+				}
+			},
+		};
+	}
 </script>
+<?php endif ?>
 
 <script type="text/javascript">
     async function copyToClipboard(text, button) {
