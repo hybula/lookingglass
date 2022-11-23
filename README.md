@@ -33,6 +33,9 @@ Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead 
 7. Rename config.dist.php to config.php and adjust the settings.
 8. (Optional) You might want to enable SSL using LetsEncrypt, take a look at [acme.sh](https://github.com/acmesh-official/acme.sh).
 
+### Upgrading
+Upgrading from a previous version is easy, simply overwrite your current installation with the new files. Then update your config.php accordingly, the script will automatically check for missing variables.
+
 ### Customization
 If you open up config.dist.php you will see that there are some features that allows you to customize the looking glass, this includes a custom CSS override.
 You may also extend the looking glass with a custom block.
