@@ -16,8 +16,8 @@ if (!file_exists(__DIR__ . '/config.php')) {
     die('config.php is not found, but is required for application to work!');
 }
 
-require __DIR__ . '/config.php';
 require __DIR__ . '/LookingGlass.php';
+require __DIR__ . '/config.php';
 
 LookingGlass::validateConfig();
 LookingGlass::startSession();
