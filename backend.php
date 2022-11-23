@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Hybula Looking Glass
  *
@@ -11,10 +11,8 @@
  * @link https://github.com/hybula/lookingglass
  */
 
-declare(strict_types=1);
-
-require __DIR__.'/config.php';
 require __DIR__.'/LookingGlass.php';
+require __DIR__.'/config.php';
 
 use Hybula\LookingGlass;
 
