@@ -212,8 +212,8 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                         </div>
 
                         <?php if ($templateData['error_message']): ?>
-						<div class="alert alert-danger mt-3" role="alert"><?php echo $templateData['error_message'] ?></div>
-						<?php endif ?>
+                        <div class="alert alert-danger mt-3" role="alert"><?php echo $templateData['error_message'] ?></div>
+                        <?php endif ?>
 
                         <div class="card card-body bg-light mt-4" style="display: none;" id="outputCard">
                             <pre id="outputContent" style="overflow: hidden; white-space: pre; word-wrap: normal;"></pre>
