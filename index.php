@@ -271,67 +271,67 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 
 <?php if ($templateData['session_call_backend']): ?>
 <script type="text/javascript">
-	(function() {
-		const outputContent = document.getElementById('outputContent')
-		const executeButton = document.getElementById('executeButton')
-		const outputCard = document.getElementById('outputCard')
+    (function () {
+        const outputContent = document.getElementById('outputContent')
+        const executeButton = document.getElementById('executeButton')
+        const outputCard = document.getElementById('outputCard')
 
-		executeButton.innerText = 'Executing...'
-		executeButton.disabled = true
+        executeButton.innerText = 'Executing...'
+        executeButton.disabled = true
 
-		outputCard.style.display = 'inherit'
+        outputCard.style.display = 'inherit'
 
-		fetch('/backend.php')
-			.then(async (response) => {
-				// response.body is a ReadableStream
-				const reader = response.body.getReader()
-				const decoder = new TextDecoder()
+        fetch('/backend.php')
+            .then(async (response) => {
+                // response.body is a ReadableStream
+                const reader = response.body.getReader()
+                const decoder = new TextDecoder()
 
-				for await (const chunk of readChunks(reader)) {
-					const text = decoder.decode(chunk)
+                for await (const chunk of readChunks(reader)) {
+                    const text = decoder.decode(chunk)
                     <?php if(in_array($_SESSION[LookingGlass::SESSION_TARGET_METHOD], [LookingGlass::METHOD_MTR, LookingGlass::METHOD_MTR6])): ?>
                     let splittedText = text.split('---')
-					if(!splittedText[1]) {
-						continue
-					}
-					outputContent.innerHTML = splittedText[1].trim()
+                    if (!splittedText[1]) {
+                        continue
+                    }
+                    outputContent.innerHTML = splittedText[1].trim()
                     <?php else: ?>
-					outputContent.innerHTML = outputContent.innerHTML + text.trim().replace(/<br \/> +/g, '<br />')
+                    outputContent.innerHTML = outputContent.innerHTML + text.trim().replace(/<br \/> +/g, '<br />')
                     <?php endif ?>
-				}
-			})
-			.finally(() => {
-				executeButton.innerText = 'Execute'
-				executeButton.disabled = false
-				console.log('Backend ready!')
-			})
-	})()
+                }
+            })
+            .finally(() => {
+                executeButton.innerText = 'Execute'
+                executeButton.disabled = false
+                console.log('Backend ready!')
+            })
+    })()
 
-	// readChunks() reads from the provided reader and yields the results into an async iterable
-	function readChunks(reader) {
-		return {
-			async* [Symbol.asyncIterator]() {
-				let readResult = await reader.read()
-				while (!readResult.done) {
-					yield readResult.value
-					readResult = await reader.read()
-				}
-			},
-		};
-	}
+    // readChunks() reads from the provided reader and yields the results into an async iterable
+    function readChunks(reader) {
+        return {
+            async* [Symbol.asyncIterator]() {
+                let readResult = await reader.read()
+                while (!readResult.done) {
+                    yield readResult.value
+                    readResult = await reader.read()
+                }
+            },
+        }
+    }
 </script>
 <?php endif ?>
 
 <script type="text/javascript">
     async function copyToClipboard(text, button) {
-        if (!navigator || !navigator.clipboard || !navigator.clipboard.writeText){
-            return Promise.reject('The Clipboard API is not available.');
+        if (!navigator || !navigator.clipboard || !navigator.clipboard.writeText) {
+            return Promise.reject('The Clipboard API is not available.')
         }
 
-        button.innerHTML = 'Copied!';
-        await navigator.clipboard.writeText(text);
-        await new Promise(r => setTimeout(r, 2000));
-        button.innerHTML = 'Copy';
+        button.innerHTML = 'Copied!'
+        await navigator.clipboard.writeText(text)
+        await new Promise(r => setTimeout(r, 2000))
+        button.innerHTML = 'Copy'
     }
 </script>
 
