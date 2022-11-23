@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Hybula Looking Glass
  *
@@ -10,15 +10,21 @@
  * @since File available since release 0.1
  * @link https://github.com/hybula/lookingglass
  */
-
-declare(strict_types=1);
-
 namespace Hybula;
 
 class LookingGlass
 {
-    public static $targetHost;
-    public static $targetType;
+    public const IPV4 = 'ipv4';
+    public const IPV6 = 'ipv6';
+
+    public const SESSION_TARGET_HOST   = 'target_host';
+    public const SESSION_TARGET_METHOD = 'target_method';
+    public const SESSION_TOS_CHECKED   = 'tos_checked';
+    public const SESSION_CALL_BACKEND  = 'call_backend';
+    public const SESSION_ERROR_MESSAGE = 'error_message';
+    public const SESSION_CSRF          = 'CSRF';
+
+    private const MTR_COUNT = 10;
 
     /**
      * Validates the config.php file for required constants.
