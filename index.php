@@ -16,53 +16,57 @@ require __DIR__.'/bootstrap.php';
 use Hybula\LookingGlass;
 
 
+$errorMessage = null;
 if (!empty($_POST)) {
-    do {
-        if (!isset($_POST['csrfToken']) || !isset($_SESSION['CSRF']) || ($_POST['csrfToken'] != $_SESSION['CSRF'])) {
-            $errorMessage = 'Missing or incorrect CSRF token.';
-            break;
+    if (!isset($_POST['csrfToken']) || !isset($_SESSION[LookingGlass::SESSION_CSRF]) || ($_POST['csrfToken'] !== $_SESSION[LookingGlass::SESSION_CSRF])) {
+        exitErrorMessage('Missing or incorrect CSRF token.');
+    }
+
+    if (!isset($_POST['submitForm']) || !isset($_POST['backendMethod']) || !isset($_POST['targetHost'])) {
+        exitErrorMessage('Unsupported POST received.');
+    }
+
+    if (!in_array($_POST['backendMethod'], LG_METHODS)) {
+        exitErrorMessage('Unsupported backend method.');
+    }
+
+    $_SESSION[LookingGlass::SESSION_TARGET_METHOD] = $_POST['backendMethod'];
+    $_SESSION[LookingGlass::SESSION_TARGET_HOST]   = $_POST['targetHost'];
+    if (!isset($_POST['checkTerms']) && LG_TERMS) {
+        exitErrorMessage('You must agree with the Terms of Service.');
+    }
+
+    $targetHost = $_POST['targetHost'];
+    if (in_array($_POST['backendMethod'], ['ping', 'mtr', 'traceroute'])) {
+        if (!LookingGlass::isValidIpv4($_POST['targetHost']) &&
+            !$targetHost = LookingGlass::isValidHost($_POST['targetHost'], LookingGlass::IPV4)
+        ) {
+            exitErrorMessage('No valid IPv4 provided.');
         }
-        if (isset($_POST['submitForm'])) {
-            if (!in_array($_POST['backendMethod'], LG_METHODS)) {
-                $errorMessage = 'Unsupported backend method.';
-                break;
-            }
-            $_SESSION['METHOD'] = $_POST['backendMethod'];
-            $_SESSION['TARGET'] = $_POST['targetHost'];
-            if (!isset($_POST['checkTerms']) && LG_TERMS) {
-                $errorMessage = 'You must agree with the Terms of Service.';
-                break;
-            }
+    }
 
-            if (in_array($_POST['backendMethod'], ['ping', 'mtr', 'traceroute'])) {
-                if (!LookingGlass::isValidIpv4($_POST['targetHost'])) {
-                    $targetHost = LookingGlass::isValidHost($_POST['targetHost'], LookingGlass::IPV4);
-                    if (!$targetHost) {
-                        $errorMessage = 'No valid IPv4 provided.';
-                        break;
-                    }
-                    $_SESSION['TARGET'] = $targetHost;
-                }
-            }
-
-            if (in_array($_POST['backendMethod'], ['ping6', 'mtr6', 'traceroute6'])) {
-                if (!LookingGlass::isValidIpv6($_POST['targetHost'])) {
-                    $targetHost = LookingGlass::isValidHost($_POST['targetHost'], LookingGlass::IPV4);
-                    if (!$targetHost) {
-                        $errorMessage = 'No valid IPv6 provided.';
-                        break;
-                    }
-                    $_SESSION['TARGET'] = $targetHost;
-                }
-            }
-
-            $_SESSION['TERMS'] = true;
-            $_SESSION['BACKEND'] = true;
-            break;
+    if (in_array($_POST['backendMethod'], ['ping6', 'mtr6', 'traceroute6'])) {
+        if (!LookingGlass::isValidIpv6($_POST['targetHost']) ||
+            !$targetHost = LookingGlass::isValidHost($_POST['targetHost'],LookingGlass::IPV6)
+        ) {
+            exitErrorMessage('No valid IPv6 provided.');
         }
-        $errorMessage = 'Unsupported POST received.';
-        break;
-    } while (true);
+    }
+
+    $_SESSION[LookingGlass::SESSION_TARGET_HOST]  = $targetHost;
+    $_SESSION[LookingGlass::SESSION_TOS_CHECKED]  = true;
+    $_SESSION[LookingGlass::SESSION_CALL_BACKEND] = true;
+    exitNormal();
+}
+
+$templateData['session_target']       = $_SESSION[LookingGlass::SESSION_TARGET_HOST] ?? '';
+$templateData['session_method']       = $_SESSION[LookingGlass::SESSION_TARGET_METHOD] ?? '';
+$templateData['session_call_backend'] = $_SESSION[LookingGlass::SESSION_CALL_BACKEND] ?? false;
+$templateData['session_tos_checked']  = isset($_SESSION[LookingGlass::SESSION_TOS_CHECKED]) ? ' checked' : '';
+
+if (isset($_SESSION[LookingGlass::SESSION_ERROR_MESSAGE])) {
+    $templateData['error_message'] = $_SESSION[LookingGlass::SESSION_ERROR_MESSAGE];
+    unset($_SESSION[LookingGlass::SESSION_ERROR_MESSAGE]);
 }
 
 if (LG_BLOCK_CUSTOM) {
