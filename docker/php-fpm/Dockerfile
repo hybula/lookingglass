@@ -1,6 +1,8 @@
 FROM php:8.1-fpm-bullseye
 
-RUN apt update && apt install iputils-ping mtr traceroute -y
+RUN apt-get update && \
+    apt-get --no-install-recommends -y install iputils-ping mtr traceroute && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
 
