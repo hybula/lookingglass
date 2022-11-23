@@ -38,6 +38,7 @@ function exitNormal(): void
 $templateData           = [
     'title'                    => LG_TITLE,
     'custom_css'               => LG_CSS_OVERRIDES,
+    'custom_head'              => LG_CUSTOM_HEAD,
     'logo_url'                 => LG_LOGO_URL,
     'logo_data'                => LG_LOGO,
     //

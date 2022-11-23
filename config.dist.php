@@ -11,6 +11,8 @@ const LG_LOGO_URL = 'https://github.com/hybula/lookingglass/';
 
 // Define a custom CSS file which can be used to style the LG, set false to disable, else point to the CSS file;
 const LG_CSS_OVERRIDES = false;
+// Define <head> content, this could be JS, CSS or meta tags;
+const LG_CUSTOM_HEAD = false;
 
 // Enable or disable blocks/parts of the LG, set false to hide a part;
 const LG_BLOCK_NETWORK = true;
