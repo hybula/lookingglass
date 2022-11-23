@@ -6,5 +6,5 @@ RUN apt-get update && \
 
 WORKDIR /var/www/html
 
-COPY . .
+COPY --chown=www-data:www-data . .
 COPY docker/php-fpm/src/config.php config.php
