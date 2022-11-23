@@ -21,8 +21,13 @@ use Hybula\LookingGlass;
 LookingGlass::validateConfig();
 LookingGlass::startSession();
 
-if ($_SESSION['TARGET'] && $_SESSION['METHOD'] && isset($_SESSION['BACKEND'])) {
-    unset($_SESSION['BACKEND']);
+if (isset($_SESSION[LookingGlass::SESSION_TARGET_HOST]) &&
+    isset($_SESSION[LookingGlass::SESSION_TARGET_METHOD]) &&
+    isset($_SESSION[LookingGlass::SESSION_CALL_BACKEND])
+) {
+    unset($_SESSION[LookingGlass::SESSION_CALL_BACKEND]);
+
+
     switch ($_SESSION['METHOD']) {
         case 'ping':
             LookingGlass::ping($_SESSION['TARGET']);
