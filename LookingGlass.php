@@ -40,6 +40,7 @@ class LookingGlass
      */
     public static function validateConfig(): void
     {
+        //@formatter:off
         if (!defined('LG_TITLE')) die('LG_TITLE not found in config.php');
         if (!defined('LG_LOGO')) die('LG_LOGO not found in config.php');
         if (!defined('LG_LOGO_URL')) die('LG_LOGO_URL not found in config.php');
@@ -64,6 +65,7 @@ class LookingGlass
         if (!defined('LG_SPEEDTEST_CMD_OUTGOING')) die('LG_SPEEDTEST_CMD_OUTGOING not found in config.php');
         if (!defined('LG_SPEEDTEST_FILES')) die('LG_SPEEDTEST_FILES not found in config.php');
         if (!defined('LG_TERMS')) die('LG_TERMS not found in config.php');
+        //@formatter:on
     }
 
     /**
