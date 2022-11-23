@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Hybula Looking Glass
  *
@@ -11,69 +11,73 @@
  * @link https://github.com/hybula/lookingglass
  */
 
-declare(strict_types=1);
-
-require __DIR__.'/config.php';
-require __DIR__.'/LookingGlass.php';
+require __DIR__.'/bootstrap.php';
 
 use Hybula\LookingGlass;
 
-LookingGlass::validateConfig();
-LookingGlass::startSession();
-$detectIpAddress = LookingGlass::detectIpAddress();
 
+$errorMessage = null;
 if (!empty($_POST)) {
-    do {
-        if (!isset($_POST['csrfToken']) || !isset($_SESSION['CSRF']) || ($_POST['csrfToken'] != $_SESSION['CSRF'])) {
-            $errorMessage = 'Missing or incorrect CSRF token.';
-            break;
-        }
-        if (isset($_POST['submitForm'])) {
-            if (!in_array($_POST['backendMethod'], LG_METHODS)) {
-                $errorMessage = 'Unsupported backend method.';
-                break;
-            }
-            $_SESSION['METHOD'] = $_POST['backendMethod'];
-            $_SESSION['TARGET'] = $_POST['targetHost'];
-            if (!isset($_POST['checkTerms']) && LG_TERMS) {
-                $errorMessage = 'You must agree with the Terms of Service.';
-                break;
-            }
+    if (!isset($_POST['csrfToken']) || !isset($_SESSION[LookingGlass::SESSION_CSRF]) || ($_POST['csrfToken'] !== $_SESSION[LookingGlass::SESSION_CSRF])) {
+        exitErrorMessage('Missing or incorrect CSRF token.');
+    }
 
-            if (in_array($_POST['backendMethod'], ['ping', 'mtr', 'traceroute'])) {
-                if (!LookingGlass::isValidIpv4($_POST['targetHost'])) {
-                    $targetHost = LookingGlass::isValidHost($_POST['targetHost'], 'ipv4');
-                    if (!$targetHost) {
-                        $errorMessage = 'No valid IPv4 provided.';
-                        break;
-                    }
-                    $_SESSION['TARGET'] = $targetHost;
-                }
-            }
-            if (in_array($_POST['backendMethod'], ['ping6', 'mtr6', 'traceroute6'])) {
-                if (!LookingGlass::isValidIpv6($_POST['targetHost'])) {
-                    $targetHost = LookingGlass::isValidHost($_POST['targetHost'], 'ipv6');
-                    if (!$targetHost) {
-                        $errorMessage = 'No valid IPv6 provided.';
-                        break;
-                    }
-                    $_SESSION['TARGET'] = $targetHost;
-                }
-            }
-            $_SESSION['TERMS'] = true;
-            $_SESSION['BACKEND'] = true;
-            break;
+    if (!isset($_POST['submitForm']) || !isset($_POST['backendMethod']) || !isset($_POST['targetHost'])) {
+        exitErrorMessage('Unsupported POST received.');
+    }
+
+    if (!in_array($_POST['backendMethod'], LG_METHODS)) {
+        exitErrorMessage('Unsupported backend method.');
+    }
+
+    $_SESSION[LookingGlass::SESSION_TARGET_METHOD] = $_POST['backendMethod'];
+    $_SESSION[LookingGlass::SESSION_TARGET_HOST]   = $_POST['targetHost'];
+    if (!isset($_POST['checkTerms']) && LG_TERMS) {
+        exitErrorMessage('You must agree with the Terms of Service.');
+    }
+
+    $targetHost = $_POST['targetHost'];
+    if (in_array($_POST['backendMethod'], ['ping', 'mtr', 'traceroute'])) {
+        if (!LookingGlass::isValidIpv4($_POST['targetHost']) &&
+            !$targetHost = LookingGlass::isValidHost($_POST['targetHost'], LookingGlass::IPV4)
+        ) {
+            exitErrorMessage('No valid IPv4 provided.');
         }
-        $errorMessage = 'Unsupported POST received.';
-        break;
-    } while (true);
+    }
+
+    if (in_array($_POST['backendMethod'], ['ping6', 'mtr6', 'traceroute6'])) {
+        if (!LookingGlass::isValidIpv6($_POST['targetHost']) ||
+            !$targetHost = LookingGlass::isValidHost($_POST['targetHost'],LookingGlass::IPV6)
+        ) {
+            exitErrorMessage('No valid IPv6 provided.');
+        }
+    }
+
+    $_SESSION[LookingGlass::SESSION_TARGET_HOST]  = $targetHost;
+    $_SESSION[LookingGlass::SESSION_TOS_CHECKED]  = true;
+    $_SESSION[LookingGlass::SESSION_CALL_BACKEND] = true;
+    exitNormal();
 }
 
-$_SESSION['CSRF'] = bin2hex(random_bytes(12));
+$templateData['session_target']       = $_SESSION[LookingGlass::SESSION_TARGET_HOST] ?? '';
+$templateData['session_method']       = $_SESSION[LookingGlass::SESSION_TARGET_METHOD] ?? '';
+$templateData['session_call_backend'] = $_SESSION[LookingGlass::SESSION_CALL_BACKEND] ?? false;
+$templateData['session_tos_checked']  = isset($_SESSION[LookingGlass::SESSION_TOS_CHECKED]) ? ' checked' : '';
+
+if (isset($_SESSION[LookingGlass::SESSION_ERROR_MESSAGE])) {
+    $templateData['error_message'] = $_SESSION[LookingGlass::SESSION_ERROR_MESSAGE];
+    unset($_SESSION[LookingGlass::SESSION_ERROR_MESSAGE]);
+}
 
 if (LG_BLOCK_CUSTOM) {
     include LG_CUSTOM_PHP;
+
+    ob_start();
+    include LG_CUSTOM_HTML;
+    $templateData['custom_html'] = ob_get_clean();
 }
+
+$templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(random_bytes(12));
 ?>
 <!doctype html>
 <html lang="en">
@@ -82,9 +86,9 @@ if (LG_BLOCK_CUSTOM) {
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta content="" name="description">
     <meta content="Hybula" name="author">
-    <title><?php echo LG_TITLE; ?></title>
+    <title><?php echo $templateData['title'] ?></title>
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
-    <?php if (LG_CSS_OVERRIDES) { echo '<link href="'.LG_CSS_OVERRIDES.'" rel="stylesheet">'; } ?>
+    <?php if ($templateData['custom_css']) { echo '<link href="'.$templateData['custom_css'].'" rel="stylesheet">'; } ?>
 </head>
 <body>
 
@@ -92,23 +96,23 @@ if (LG_BLOCK_CUSTOM) {
 
     <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
             <div class="col-8">
-                <a class="d-flex align-items-center text-dark text-decoration-none" href="<?php echo LG_LOGO_URL; ?>" target="_blank">
-                    <?php echo LG_LOGO; ?>
+                <a class="d-flex align-items-center text-dark text-decoration-none" href="<?php echo $templateData['logo_url'] ?>" target="_blank">
+                    <?php echo $templateData['logo_data'] ?>
                 </a>
             </div>
             <div class="col-4 float-end">
                 <select class="form-select" onchange="window.location = this.options[this.selectedIndex].value">
-                    <option selected><?php echo LG_LOCATION; ?></option>
-                    <?php foreach (LG_LOCATIONS as $location => $link) { ?>
-                        <option value="<?php echo $link; ?>"><?php echo $location; ?></option>
-                    <?php } ?>
+                    <option selected><?php echo $templateData['current_location'] ?></option>
+                    <?php foreach ($templateData['locations'] as $location => $link): ?>
+                        <option value="<?php echo $link ?>"><?php echo $location ?></option>
+                    <?php endforeach ?>
                 </select>
             </div>
     </header>
 
     <main>
 
-        <?php if (LG_BLOCK_NETWORK) { ?>
+        <?php if (LG_BLOCK_NETWORK): ?>
         <div class="row mb-5">
             <div class="card shadow-lg">
                 <div class="card-body p-3">
@@ -118,23 +122,23 @@ if (LG_BLOCK_CUSTOM) {
                         <div class="col-md-7">
                             <label class="mb-2 text-muted">Location</label>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" value="<?php echo LG_LOCATION; ?>" onfocus="this.select()" readonly="">
-                                <a class="btn btn-outline-secondary" href="https://www.openstreetmap.org/search?query=<?php echo urlencode(LG_LOCATION); ?>" target="_blank">Map</a>
-                                <?php if (!empty(LG_LOCATIONS)) { ?>
+                                <input type="text" class="form-control" value="<?php echo $templateData['current_location'] ?>" onfocus="this.select()" readonly="">
+                                <a class="btn btn-outline-secondary" href="https://www.openstreetmap.org/search?query=<?php echo urlencode($templateData['maps_query']); ?>" target="_blank">Map</a>
+                                <?php if (!empty($templateData['locations'])): ?>
                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Locations</button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <?php foreach (LG_LOCATIONS as $location => $link) { ?>
-                                    <li><a class="dropdown-item" href="<?php echo $link; ?>"><?php echo $location; ?></a></li>
-                                    <?php } ?>
+                                    <?php foreach ($templateData['locations'] as $location => $link): ?>
+                                    <li><a class="dropdown-item" href="<?php echo $link ?>"><?php echo $location ?></a></li>
+                                    <?php endforeach ?>
                                 </ul>
-                                <?php } ?>
+                                <?php endif ?>
                             </div>
                         </div>
                         <div class="col-md-5">
                             <label class="mb-2 text-muted">Facility</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="<?php echo LG_FACILITY; ?>" onfocus="this.select()" readonly="">
-                                <a href="<?php echo LG_FACILITY_URL; ?>" class="btn btn-outline-secondary" target="_blank">PeeringDB</a>
+                                <input type="text" class="form-control" value="<?php echo $templateData['facility'] ?>" onfocus="this.select()" readonly="">
+                                <a href="<?php echo $templateData['facility_url'] ?>" class="btn btn-outline-secondary" target="_blank">PeeringDB</a>
                             </div>
                         </div>
                     </div>
@@ -143,22 +147,22 @@ if (LG_BLOCK_CUSTOM) {
                         <div class="col-md-3">
                             <label class="mb-2 text-muted">Test IPv4</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="<?php echo LG_IPV4; ?>" onfocus="this.select()" readonly="">
-                                <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo LG_IPV4; ?>', this)">Copy</button>
+                                <input type="text" class="form-control" value="<?php echo $templateData['ipv4'] ?>" onfocus="this.select()" readonly="">
+                                <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo $templateData['ipv4'] ?>', this)">Copy</button>
                             </div>
                         </div>
                         <div class="col-md-5">
                             <label class="mb-2 text-muted">Test IPv6</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="<?php echo LG_IPV6; ?>" onfocus="this.select()" readonly="">
-                                <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo LG_IPV6; ?>', this)">Copy</button>
+                                <input type="text" class="form-control" value="<?php echo $templateData['ipv6'] ?>" onfocus="this.select()" readonly="">
+                                <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo $templateData['ipv6'] ?>', this)">Copy</button>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <label class="mb-2 text-muted">Your IP</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" value="<?php echo $detectIpAddress; ?>" onfocus="this.select()" readonly="">
-                                <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo $detectIpAddress; ?>', this)">Copy</button>
+                                <input type="text" class="form-control" value="<?php echo $templateData['user_ip'] ?>" onfocus="this.select()" readonly="">
+                                <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo $templateData['user_ip'] ?>', this)">Copy</button>
                             </div>
                         </div>
                     </div>
@@ -166,48 +170,50 @@ if (LG_BLOCK_CUSTOM) {
                 </div>
             </div>
         </div>
-        <?php } ?>
+        <?php endif ?>
 
-        <?php if (LG_BLOCK_LOOKINGGLAS) { ?>
+        <?php if (LG_BLOCK_LOOKINGGLAS): ?>
         <div class="row pb-5">
             <div class="card shadow-lg">
                 <div class="card-body p-3">
                     <h1 class="fs-4 card-title mb-4">Looking Glass</h1>
                     <form method="POST" action="/" autocomplete="off">
-                        <input type="hidden" name="csrfToken" value="<?php echo $_SESSION['CSRF']; ?>">
+                        <input type="hidden" name="csrfToken" value="<?php echo $templateData['csrfToken'] ?>">
 
                         <div class="row">
                             <div class="col-md-7 mb-3">
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1">Target</span>
-                                    <input type="text" class="form-control" placeholder="IP address or host..." name="targetHost" value="<?php if (isset($_SESSION['TARGET'])) { echo $_SESSION['TARGET']; } ?>" required="">
+                                    <input type="text" class="form-control" placeholder="IP address or host..." name="targetHost" value="<?php echo $templateData['session_target'] ?>" required="">
                                 </div>
                             </div>
                             <div class="col-md-5 mb-3">
                                 <div class="input-group">
                                     <label class="input-group-text">Method</label>
                                     <select class="form-select" name="backendMethod" id="backendMethod">
-                                        <?php foreach (LG_METHODS as $method) { ?>
-                                            <option value="<?php echo $method; ?>"<?php if (isset($_SESSION['METHOD']) && $_SESSION['METHOD'] == $method) { echo 'selected'; } ?>><?php echo $method; ?></option>
-                                        <?php } ?>
+                                        <?php foreach ($templateData['methods'] as $method): ?>
+                                            <option value="<?php echo $method ?>"<?php if($templateData['session_method'] === $method): ?> selected<?php endif ?>><?php echo $method ?></option>
+                                        <?php endforeach ?>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
                         <div class="d-flex align-items-center">
-                            <?php if (LG_TERMS) { ?>
+                            <?php if ($templateData['tos']): ?>
                             <div class="form-check">
-                                <input type="checkbox" id="checkTerms" name="checkTerms" class="form-check-input"<?php if (isset($_SESSION['TERMS'])) { echo 'checked'; } ?>>
-                                <label for="checkTerms" class="form-check-label">I agree with the <a href="<?php echo LG_TERMS; ?>" target="_blank">Terms of Use</a></label>
+                                <input type="checkbox" id="checkTerms" name="checkTerms" class="form-check-input"<?php echo $templateData['session_tos_checked'] ?>>
+                                <label for="checkTerms" class="form-check-label">I agree with the <a href="<?php echo $templateData['tos'] ?>" target="_blank">Terms of Use</a></label>
                             </div>
-                            <?php } ?>
+                            <?php endif ?>
                             <button type="submit" class="btn btn-primary ms-auto" id="executeButton" name="submitForm">
                                 Execute
                             </button>
                         </div>
 
-                        <?php if (isset($errorMessage)) echo '<div class="alert alert-danger mt-3" role="alert">'.$errorMessage.'</div>'; ?>
+                        <?php if ($templateData['error_message']): ?>
+                        <div class="alert alert-danger mt-3" role="alert"><?php echo $templateData['error_message'] ?></div>
+                        <?php endif ?>
 
                         <div class="card card-body bg-light mt-4" style="display: none;" id="outputCard">
                             <pre id="outputContent" style="overflow: hidden; white-space: pre; word-wrap: normal;"></pre>
@@ -217,45 +223,44 @@ if (LG_BLOCK_CUSTOM) {
                 </div>
             </div>
         </div>
-        <?php } ?>
+        <?php endif ?>
 
-        <?php if (LG_BLOCK_SPEEDTEST) { ?>
+        <?php if (LG_BLOCK_SPEEDTEST): ?>
         <div class="row pb-5">
             <div class="card shadow-lg">
                 <div class="card-body p-3">
                     <h1 class="fs-4 card-title mb-4">Speedtest</h1>
 
-                    <?php if (LG_SPEEDTEST_IPERF) { ?>
+                    <?php if ($templateData['speedtest_iperf']): ?>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="mb-2 text-muted"><?php echo LG_SPEEDTEST_LABEL_INCOMING; ?></label>
-                            <p><code><?php echo LG_SPEEDTEST_CMD_INCOMING; ?></code></p>
-                            <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('<?php echo LG_SPEEDTEST_CMD_INCOMING; ?>', this)">Copy</button>
+                            <label class="mb-2 text-muted"><?php echo $templateData['speedtest_incoming_label'] ?></label>
+                            <p><code><?php echo $templateData['speedtest_incoming_cmd']; ?></code></p>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('<?php echo $templateData['speedtest_incoming_cmd'] ?>', this)">Copy</button>
                         </div>
                         <div class="col-md-6">
-                            <label class="mb-2 text-muted"><?php echo LG_SPEEDTEST_LABEL_OUTGOING; ?></label>
-                            <p><code><?php echo LG_SPEEDTEST_CMD_OUTGOING; ?></code></p>
-                            <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('<?php echo LG_SPEEDTEST_CMD_OUTGOING; ?>', this)">Copy</button>
+                            <label class="mb-2 text-muted"><?php echo $templateData['speedtest_outgoing_label'] ?></label>
+                            <p><code><?php echo $templateData['speedtest_outgoing_cmd'] ?></code></p>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('<?php echo $templateData['speedtest_outgoing_cmd'] ?>', this)">Copy</button>
                         </div>
                     </div>
-                    <?php } ?>
+                    <?php endif ?>
 
                     <div class="row">
                         <label class="mb-2 text-muted">Test Files</label>
                         <div class="btn-group input-group mb-3">
-                            <?php foreach (LG_SPEEDTEST_FILES as $file => $link) { ?>
-                                <a href="<?php echo $link; ?>" class="btn btn-outline-secondary"><?php echo $file; ?></a>
-                            <?php } ?>
+                            <?php foreach ($templateData['speedtest_files'] as $file => $link): ?>
+                                <a href="<?php echo $link ?>" class="btn btn-outline-secondary"><?php echo $file ?></a>
+                            <?php endforeach ?>
                         </div>
                     </div>
 
                 </div>
             </div>
         </div>
-        <?php } ?>
+        <?php endif ?>
 
-        <?php if (LG_BLOCK_CUSTOM) { include LG_CUSTOM_HTML; } ?>
-
+        <?php echo $templateData['custom_html'] ?>
 
     </main>
     <footer class="pt-3 mt-5 my-5 text-muted border-top">
@@ -264,38 +269,69 @@ if (LG_BLOCK_CUSTOM) {
     </footer>
 </div>
 
+<?php if ($templateData['session_call_backend']): ?>
 <script type="text/javascript">
-    <?php if (isset($_SESSION['BACKEND'])) { echo 'callBackend();'; } ?>
-    function callBackend() {
-        const executeButton = document.getElementById('executeButton');
-        executeButton.innerText = 'Executing...';
-        executeButton.disabled = true;
-        document.getElementById('outputCard').style.display = 'inherit';
-        const xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            document.getElementById('outputContent').innerHTML = this.responseText.replace(/<br \/> +/g, '<br />');
-            if (this.readyState === XMLHttpRequest.DONE) {
-                executeButton.innerText = 'Execute';
-                executeButton.disabled = false;
-                console.log('Backend ready!');
-            }
-        };
-        xhr.open('GET', 'backend.php', true);
-        xhr.send();
+    (function () {
+        const outputContent = document.getElementById('outputContent')
+        const executeButton = document.getElementById('executeButton')
+        const outputCard = document.getElementById('outputCard')
+
+        executeButton.innerText = 'Executing...'
+        executeButton.disabled = true
+
+        outputCard.style.display = 'inherit'
+
+        fetch('/backend.php')
+            .then(async (response) => {
+                // response.body is a ReadableStream
+                const reader = response.body.getReader()
+                const decoder = new TextDecoder()
+
+                for await (const chunk of readChunks(reader)) {
+                    const text = decoder.decode(chunk)
+                    <?php if(in_array($_SESSION[LookingGlass::SESSION_TARGET_METHOD], [LookingGlass::METHOD_MTR, LookingGlass::METHOD_MTR6])): ?>
+                    let splittedText = text.split('---')
+                    if (!splittedText[1]) {
+                        continue
+                    }
+                    outputContent.innerHTML = splittedText[1].trim()
+                    <?php else: ?>
+                    outputContent.innerHTML = outputContent.innerHTML + text.trim().replace(/<br \/> +/g, '<br />')
+                    <?php endif ?>
+                }
+            })
+            .finally(() => {
+                executeButton.innerText = 'Execute'
+                executeButton.disabled = false
+                console.log('Backend ready!')
+            })
+    })()
+
+    // readChunks() reads from the provided reader and yields the results into an async iterable
+    function readChunks(reader) {
+        return {
+            async* [Symbol.asyncIterator]() {
+                let readResult = await reader.read()
+                while (!readResult.done) {
+                    yield readResult.value
+                    readResult = await reader.read()
+                }
+            },
+        }
     }
 </script>
+<?php endif ?>
 
 <script type="text/javascript">
     async function copyToClipboard(text, button) {
-        button.innerHTML = 'Copied!';
-        const textAreaObject = document.createElement('textarea');
-        textAreaObject.value = text;
-        document.body.appendChild(textAreaObject);
-        textAreaObject.select();
-        document.execCommand('copy');
-        document.body.removeChild(textAreaObject);
-        await new Promise(r => setTimeout(r, 2000));
-        button.innerHTML = 'Copy';
+        if (!navigator || !navigator.clipboard || !navigator.clipboard.writeText) {
+            return Promise.reject('The Clipboard API is not available.')
+        }
+
+        button.innerHTML = 'Copied!'
+        await navigator.clipboard.writeText(text)
+        await new Promise(r => setTimeout(r, 2000))
+        button.innerHTML = 'Copy'
     }
 </script>
 

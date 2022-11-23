@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * Hybula Looking Glass
  *
@@ -11,36 +11,39 @@
  * @link https://github.com/hybula/lookingglass
  */
 
-declare(strict_types=1);
-
-require __DIR__.'/config.php';
 require __DIR__.'/LookingGlass.php';
+require __DIR__.'/config.php';
 
 use Hybula\LookingGlass;
 
 LookingGlass::validateConfig();
 LookingGlass::startSession();
 
-if ($_SESSION['TARGET'] && $_SESSION['METHOD'] && isset($_SESSION['BACKEND'])) {
-    unset($_SESSION['BACKEND']);
-    switch ($_SESSION['METHOD']) {
-        case 'ping':
-            LookingGlass::ping($_SESSION['TARGET']);
+if (isset($_SESSION[LookingGlass::SESSION_TARGET_HOST]) &&
+    isset($_SESSION[LookingGlass::SESSION_TARGET_METHOD]) &&
+    isset($_SESSION[LookingGlass::SESSION_CALL_BACKEND])
+) {
+    unset($_SESSION[LookingGlass::SESSION_CALL_BACKEND]);
+
+
+    switch ($_SESSION[LookingGlass::SESSION_TARGET_METHOD]) {
+        case LookingGlass::METHOD_PING:
+            LookingGlass::ping($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'ping6':
-            LookingGlass::ping6($_SESSION['TARGET']);
+        case LookingGlass::METHOD_PING6:
+            LookingGlass::ping6($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'mtr':
-            LookingGlass::mtr($_SESSION['TARGET']);
+        case LookingGlass::METHOD_MTR:
+            LookingGlass::mtr($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'mtr6':
-            LookingGlass::mtr6($_SESSION['TARGET']);
+        case LookingGlass::METHOD_MTR6:
+            LookingGlass::mtr6($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'traceroute':
-            LookingGlass::traceroute($_SESSION['TARGET']);
+        case LookingGlass::METHOD_TRACEROUTE:
+            LookingGlass::traceroute($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
-        case 'traceroute6':
-            LookingGlass::traceroute6($_SESSION['TARGET']);
+        case LookingGlass::METHOD_TRACEROUTE6:
+            LookingGlass::traceroute6($_SESSION[LookingGlass::SESSION_TARGET_HOST]);
             break;
     }
 }
