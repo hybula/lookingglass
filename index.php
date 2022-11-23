@@ -289,13 +289,12 @@ if (LG_BLOCK_CUSTOM) {
 
 <script type="text/javascript">
     async function copyToClipboard(text, button) {
+        if (!navigator || !navigator.clipboard || !navigator.clipboard.writeText){
+            return Promise.reject('The Clipboard API is not available.');
+        }
+
         button.innerHTML = 'Copied!';
-        const textAreaObject = document.createElement('textarea');
-        textAreaObject.value = text;
-        document.body.appendChild(textAreaObject);
-        textAreaObject.select();
-        document.execCommand('copy');
-        document.body.removeChild(textAreaObject);
+        await navigator.clipboard.writeText(text);
         await new Promise(r => setTimeout(r, 2000));
         button.innerHTML = 'Copy';
     }
