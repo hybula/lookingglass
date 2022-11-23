@@ -42,7 +42,7 @@ if (!empty($_POST)) {
 
             if (in_array($_POST['backendMethod'], ['ping', 'mtr', 'traceroute'])) {
                 if (!LookingGlass::isValidIpv4($_POST['targetHost'])) {
-                    $targetHost = LookingGlass::isValidHost($_POST['targetHost'], 'ipv4');
+                    $targetHost = LookingGlass::isValidHost($_POST['targetHost'], LookingGlass::IPV4);
                     if (!$targetHost) {
                         $errorMessage = 'No valid IPv4 provided.';
                         break;
@@ -50,9 +50,10 @@ if (!empty($_POST)) {
                     $_SESSION['TARGET'] = $targetHost;
                 }
             }
+
             if (in_array($_POST['backendMethod'], ['ping6', 'mtr6', 'traceroute6'])) {
                 if (!LookingGlass::isValidIpv6($_POST['targetHost'])) {
-                    $targetHost = LookingGlass::isValidHost($_POST['targetHost'], 'ipv6');
+                    $targetHost = LookingGlass::isValidHost($_POST['targetHost'], LookingGlass::IPV4);
                     if (!$targetHost) {
                         $errorMessage = 'No valid IPv6 provided.';
                         break;
@@ -60,6 +61,7 @@ if (!empty($_POST)) {
                     $_SESSION['TARGET'] = $targetHost;
                 }
             }
+
             $_SESSION['TERMS'] = true;
             $_SESSION['BACKEND'] = true;
             break;
