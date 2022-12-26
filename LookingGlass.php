@@ -167,7 +167,7 @@ class LookingGlass
      */
     public static function ping(string $host, int $count = 4): bool
     {
-        return self::procExecute('ping -c' . $count . ' -w15', $host);
+        return self::procExecute('ping -4 -c' . $count . ' -w15', $host);
     }
 
     /**
