@@ -46,7 +46,7 @@ if (!empty($_POST)) {
     }
 
     if (in_array($_POST['backendMethod'], ['ping6', 'mtr6', 'traceroute6'])) {
-        if (!LookingGlass::isValidIpv6($_POST['targetHost']) ||
+        if (!LookingGlass::isValidIpv6($_POST['targetHost']) &&
             !$targetHost = LookingGlass::isValidHost($_POST['targetHost'],LookingGlass::IPV6)
         ) {
             exitErrorMessage('No valid IPv6 provided.');
