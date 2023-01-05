@@ -8,6 +8,8 @@ const LG_TITLE = 'Looking Glass';
 const LG_LOGO = '<h2>Company Looking Glass</h2>';
 // Define the URL where the logo points to;
 const LG_LOGO_URL = 'https://github.com/hybula/lookingglass/';
+// Define <head> content, this could be JS, CSS or meta tags;
+const LG_CUSTOM_HEAD = false;
 
 // Define a custom CSS file which can be used to style the LG, set false to disable, else point to the CSS file;
 const LG_CSS_OVERRIDES = false;
