@@ -345,7 +345,7 @@ class LookingGlass
                 // kill remaining processes
                 foreach ($pids as $pid) {
                     if (is_numeric($pid)) {
-                        posix_kill($pid, 9);
+                        posix_kill((int) $pid, 9);
                     }
                 }
             }
