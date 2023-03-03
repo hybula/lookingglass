@@ -2,10 +2,10 @@
 Modern, simple and fresh looking glass based on Bootstrap 5 and PHP 8 (also compatible with 7). A looking glass is a network utility which is
 made user-friendly for everyone to use. It allows you to execute network related commands within a remote network, usually that of an ISP.
 
-![](screenshot.png)
+[![](screenshot.png)](https://lg-nl-ams.hybula.net/)
 
 ### Demo
-[See it in action here!](https://lg-nl-oum.hybula.net/)
+[See it in action here!](https://lg-nl-ams.hybula.net/)
 
 ### Features
 - Bootstrap 5 UI.
