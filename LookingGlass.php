@@ -448,7 +448,7 @@ class LookingGlass
             preg_match('/\d+\.\d+\.\d+\.\d+/', $explodedsocket[2], $temp);
             if (!isset($temp[0])) {
                 continue;
-            } // when thsi cantt be filled just continue
+            }
             $sock['local'] = $temp[0];
             preg_match('/\d+\.\d+\.\d+\.\d+/', $explodedsocket[3], $temp);
             $sock['remote'] = $temp[0];
