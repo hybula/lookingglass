@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * Hybula Looking Glass
@@ -412,7 +413,7 @@ class LookingGlass
     {
         $getLatency = self::getLatencyFromSs(self::detectIpAddress());
         if (isset($getLatency[0])) {
-            return (float)round($getLatency[0]['latency'], 2);
+            return round((float)$getLatency[0]['latency'], 2);
         } else {
             return 0.00;
         }
@@ -422,7 +423,7 @@ class LookingGlass
      * This uses the command 'ss' in order to find out latency.
      * A clever way coded by @ayyylias, so please keep credits and do not just steal.
      *
-     * @param  string  $ip The command to execute.
+     * @param  string  $ip  The command to execute.
      * @return array  Returns an array with results.
      */
     private static function getLatencyFromSs(string $ip): array
