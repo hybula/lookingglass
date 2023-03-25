@@ -413,7 +413,7 @@ class LookingGlass
     {
         $getLatency = self::getLatencyFromSs(self::detectIpAddress());
         if (isset($getLatency[0])) {
-            return round((float)$getLatency[0]['latency'], 2);
+            return round((float)$getLatency[0]['latency']);
         } else {
             return 0.00;
         }
