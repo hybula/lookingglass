@@ -77,6 +77,10 @@ if (LG_BLOCK_CUSTOM) {
     $templateData['custom_html'] = ob_get_clean();
 }
 
+if (LG_CHECK_LATENCY) {
+    $templateData['latency'] = LookingGlass::getLatency();
+}
+
 $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(random_bytes(12));
 ?>
 <!doctype html>
@@ -162,6 +166,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                         <div class="col-md-4">
                             <label class="mb-2 text-muted">Your IP</label>
                             <div class="input-group">
+                                <?php if (LG_CHECK_LATENCY): ?><label class="input-group-text" title="Latency between this looking glass and your connection." style="cursor: help;"><?php echo $templateData['latency'] ?> ms</label><?php endif ?>
                                 <input type="text" class="form-control" value="<?php echo $templateData['user_ip'] ?>" onfocus="this.select()" readonly="">
                                 <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo $templateData['user_ip'] ?>', this)">Copy</button>
                             </div>

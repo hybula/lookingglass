@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 /**
  * Hybula Looking Glass
  *
@@ -10,6 +11,7 @@
  * @since File available since release 0.1
  * @link https://github.com/hybula/lookingglass
  */
+
 namespace Hybula;
 
 class LookingGlass
@@ -17,18 +19,18 @@ class LookingGlass
     public const IPV4 = 'ipv4';
     public const IPV6 = 'ipv6';
 
-    public const SESSION_TARGET_HOST   = 'target_host';
+    public const SESSION_TARGET_HOST = 'target_host';
     public const SESSION_TARGET_METHOD = 'target_method';
-    public const SESSION_TOS_CHECKED   = 'tos_checked';
-    public const SESSION_CALL_BACKEND  = 'call_backend';
+    public const SESSION_TOS_CHECKED = 'tos_checked';
+    public const SESSION_CALL_BACKEND = 'call_backend';
     public const SESSION_ERROR_MESSAGE = 'error_message';
-    public const SESSION_CSRF          = 'CSRF';
+    public const SESSION_CSRF = 'CSRF';
 
-    public const METHOD_PING        = 'ping';
-    public const METHOD_PING6       = 'ping6';
-    public const METHOD_MTR         = 'mtr';
-    public const METHOD_MTR6        = 'mtr6';
-    public const METHOD_TRACEROUTE  = 'traceroute';
+    public const METHOD_PING = 'ping';
+    public const METHOD_PING6 = 'ping6';
+    public const METHOD_MTR = 'mtr';
+    public const METHOD_MTR6 = 'mtr6';
+    public const METHOD_TRACEROUTE = 'traceroute';
     public const METHOD_TRACEROUTE6 = 'traceroute6';
 
     private const MTR_COUNT = 10;
@@ -41,31 +43,84 @@ class LookingGlass
     public static function validateConfig(): void
     {
         //@formatter:off
-        if (!defined('LG_TITLE')) die('LG_TITLE not found in config.php');
-        if (!defined('LG_LOGO')) die('LG_LOGO not found in config.php');
-        if (!defined('LG_LOGO_URL')) die('LG_LOGO_URL not found in config.php');
-        if (!defined('LG_CSS_OVERRIDES')) die('LG_CSS_OVERRIDES not found in config.php');
-        if (!defined('LG_BLOCK_NETWORK')) die('LG_BLOCK_NETWORK not found in config.php');
-        if (!defined('LG_BLOCK_LOOKINGGLAS')) die('LG_BLOCK_LOOKINGGLAS not found in config.php');
-        if (!defined('LG_BLOCK_SPEEDTEST')) die('LG_BLOCK_SPEEDTEST not found in config.php');
-        if (!defined('LG_BLOCK_CUSTOM')) die('LG_BLOCK_CUSTOM not found in config.php');
-        if (!defined('LG_CUSTOM_HTML')) die('LG_CUSTOM_HTML not found in config.php');
-        if (!defined('LG_CUSTOM_PHP')) die('LG_CUSTOM_PHP not found in config.php');
-        if (!defined('LG_LOCATION')) die('LG_LOCATION not found in config.php');
-        if (!defined('LG_MAPS_QUERY')) die('LG_MAPS_QUERY not found in config.php');
-        if (!defined('LG_FACILITY')) die('LG_FACILITY not found in config.php');
-        if (!defined('LG_FACILITY_URL')) die('LG_FACILITY_URL not found in config.php');
-        if (!defined('LG_IPV4')) die('LG_IPV4 not found in config.php');
-        if (!defined('LG_IPV6')) die('LG_IPV6 not found in config.php');
-        if (!defined('LG_METHODS')) die('LG_METHODS not found in config.php');
-        if (!defined('LG_LOCATIONS')) die('LG_LOCATIONSnot found in config.php');
-        if (!defined('LG_SPEEDTEST_IPERF')) die('LG_SPEEDTEST_IPERF not found in config.php');
-        if (!defined('LG_SPEEDTEST_LABEL_INCOMING')) die('LG_SPEEDTEST_LABEL_INCOMING not found in config.php');
-        if (!defined('LG_SPEEDTEST_CMD_INCOMING')) die('LG_SPEEDTEST_CMD_INCOMING not found in config.php');
-        if (!defined('LG_SPEEDTEST_LABEL_OUTGOING')) die('LG_SPEEDTEST_LABEL_OUTGOING not found in config.php');
-        if (!defined('LG_SPEEDTEST_CMD_OUTGOING')) die('LG_SPEEDTEST_CMD_OUTGOING not found in config.php');
-        if (!defined('LG_SPEEDTEST_FILES')) die('LG_SPEEDTEST_FILES not found in config.php');
-        if (!defined('LG_TERMS')) die('LG_TERMS not found in config.php');
+        if (!defined('LG_TITLE')) {
+            die('LG_TITLE not found in config.php');
+        }
+        if (!defined('LG_LOGO')) {
+            die('LG_LOGO not found in config.php');
+        }
+        if (!defined('LG_LOGO_URL')) {
+            die('LG_LOGO_URL not found in config.php');
+        }
+        if (!defined('LG_CSS_OVERRIDES')) {
+            die('LG_CSS_OVERRIDES not found in config.php');
+        }
+        if (!defined('LG_BLOCK_NETWORK')) {
+            die('LG_BLOCK_NETWORK not found in config.php');
+        }
+        if (!defined('LG_BLOCK_LOOKINGGLAS')) {
+            die('LG_BLOCK_LOOKINGGLAS not found in config.php');
+        }
+        if (!defined('LG_BLOCK_SPEEDTEST')) {
+            die('LG_BLOCK_SPEEDTEST not found in config.php');
+        }
+        if (!defined('LG_BLOCK_CUSTOM')) {
+            die('LG_BLOCK_CUSTOM not found in config.php');
+        }
+        if (!defined('LG_CUSTOM_HTML')) {
+            die('LG_CUSTOM_HTML not found in config.php');
+        }
+        if (!defined('LG_CUSTOM_PHP')) {
+            die('LG_CUSTOM_PHP not found in config.php');
+        }
+        if (!defined('LG_LOCATION')) {
+            die('LG_LOCATION not found in config.php');
+        }
+        if (!defined('LG_MAPS_QUERY')) {
+            die('LG_MAPS_QUERY not found in config.php');
+        }
+        if (!defined('LG_FACILITY')) {
+            die('LG_FACILITY not found in config.php');
+        }
+        if (!defined('LG_FACILITY_URL')) {
+            die('LG_FACILITY_URL not found in config.php');
+        }
+        if (!defined('LG_IPV4')) {
+            die('LG_IPV4 not found in config.php');
+        }
+        if (!defined('LG_IPV6')) {
+            die('LG_IPV6 not found in config.php');
+        }
+        if (!defined('LG_METHODS')) {
+            die('LG_METHODS not found in config.php');
+        }
+        if (!defined('LG_LOCATIONS')) {
+            die('LG_LOCATIONSnot found in config.php');
+        }
+        if (!defined('LG_SPEEDTEST_IPERF')) {
+            die('LG_SPEEDTEST_IPERF not found in config.php');
+        }
+        if (!defined('LG_SPEEDTEST_LABEL_INCOMING')) {
+            die('LG_SPEEDTEST_LABEL_INCOMING not found in config.php');
+        }
+        if (!defined('LG_SPEEDTEST_CMD_INCOMING')) {
+            die('LG_SPEEDTEST_CMD_INCOMING not found in config.php');
+        }
+        if (!defined('LG_SPEEDTEST_LABEL_OUTGOING')) {
+            die('LG_SPEEDTEST_LABEL_OUTGOING not found in config.php');
+        }
+        if (!defined('LG_SPEEDTEST_CMD_OUTGOING')) {
+            die('LG_SPEEDTEST_CMD_OUTGOING not found in config.php');
+        }
+        if (!defined('LG_SPEEDTEST_FILES')) {
+            die('LG_SPEEDTEST_FILES not found in config.php');
+        }
+        if (!defined('LG_TERMS')) {
+            die('LG_TERMS not found in config.php');
+        }
+        if (!defined('LG_CHECK_LATENCY')) {
+            die('LG_CHECK_LATENCY not found in config.php');
+        }
         //@formatter:on
     }
 
@@ -83,7 +138,7 @@ class LookingGlass
     /**
      * Validates and checks an IPv4 address.
      *
-     * @param string $ip The IPv4 address to validate.
+     * @param  string  $ip  The IPv4 address to validate.
      * @return bool True or false depending on validation.
      */
     public static function isValidIpv4(string $ip): bool
@@ -97,7 +152,7 @@ class LookingGlass
     /**
      * Validates and checks an IPv6 address.
      *
-     * @param string $ip The IPv6 address to validate.
+     * @param  string  $ip  The IPv6 address to validate.
      * @return bool True or false depending on validation.
      */
     public static function isValidIpv6(string $ip): bool
@@ -112,7 +167,7 @@ class LookingGlass
      * Validates and checks a host address.
      * Differs from isValidIpvX because it also extracts the host.
      *
-     * @param string $host The host to validate.
+     * @param  string  $host  The host to validate.
      * @return string Actual hostname or empty if none found.
      */
     public static function isValidHost(string $host, string $type): string
@@ -122,8 +177,8 @@ class LookingGlass
             return '';
         }
 
-        if (filter_var('https://' . $host, FILTER_VALIDATE_URL)) {
-            if ($host = parse_url('https://' . $host, PHP_URL_HOST)) {
+        if (filter_var('https://'.$host, FILTER_VALIDATE_URL)) {
+            if ($host = parse_url('https://'.$host, PHP_URL_HOST)) {
                 if ($type === self::IPV4 && isset(dns_get_record($host, DNS_A)[0]['ip'])) {
                     return $host;
                 }
@@ -161,54 +216,54 @@ class LookingGlass
     /**
      * Executes a ping command.
      *
-     * @param string $host The target host.
-     * @param int $count Number of requests.
+     * @param  string  $host  The target host.
+     * @param  int  $count  Number of requests.
      * @return bool True on success.
      */
     public static function ping(string $host, int $count = 4): bool
     {
-        return self::procExecute('ping -4 -c' . $count . ' -w15', $host);
+        return self::procExecute('ping -4 -c'.$count.' -w15', $host);
     }
 
     /**
      * Executes a ping6 command.
      *
-     * @param string $host The target host.
-     * @param int $count Number of requests.
+     * @param  string  $host  The target host.
+     * @param  int  $count  Number of requests.
      * @return bool True on success.
      */
     public static function ping6(string $host, int $count = 4): bool
     {
-        return self::procExecute('ping -6 -c' . $count . ' -w15', $host);
+        return self::procExecute('ping -6 -c'.$count.' -w15', $host);
     }
 
     /**
      * Executes a mtr command.
      *
-     * @param string $host The target host.
+     * @param  string  $host  The target host.
      * @return bool True on success.
      */
     public static function mtr(string $host): bool
     {
-        return self::procExecute('mtr --raw -n -4 -c ' . self::MTR_COUNT, $host);
+        return self::procExecute('mtr --raw -n -4 -c '.self::MTR_COUNT, $host);
     }
 
     /**
      * Executes a mtr6 command.
      *
-     * @param string $host The target host.
+     * @param  string  $host  The target host.
      * @return bool True on success.
      */
     public static function mtr6(string $host): bool
     {
-        return self::procExecute('mtr --raw -n -6 -c ' . self::MTR_COUNT, $host);
+        return self::procExecute('mtr --raw -n -6 -c '.self::MTR_COUNT, $host);
     }
 
     /**
      * Executes a traceroute command.
      *
-     * @param string $host The target host.
-     * @param int $failCount Number of failed hops.
+     * @param  string  $host  The target host.
+     * @param  int  $failCount  Number of failed hops.
      * @return bool True on success.
      */
     public static function traceroute(string $host, int $failCount = 4): bool
@@ -219,8 +274,8 @@ class LookingGlass
     /**
      * Executes a traceroute6 command.
      *
-     * @param string $host The target host.
-     * @param int $failCount Number of failed hops.
+     * @param  string  $host  The target host.
+     * @param  int  $failCount  Number of failed hops.
      * @return bool True on success.
      */
     public static function traceroute6(string $host, int $failCount = 4): bool
@@ -232,9 +287,9 @@ class LookingGlass
      * Executes a command and opens pipe for input/output.
      * Directly taken from telephone/LookingGlass (MIT License)
      *
-     * @param  string  $cmd The command to execute.
-     * @param  string  $host The host that is used as param.
-     * @param  int $failCount Number of consecutive failed hops.
+     * @param  string  $cmd  The command to execute.
+     * @param  string  $host  The host that is used as param.
+     * @param  int  $failCount  Number of consecutive failed hops.
      * @return boolean True on success.
      * @link https://github.com/telephone/LookingGlass/blob/master/LookingGlass/LookingGlass.php#L172
      * @license https://github.com/telephone/LookingGlass/blob/master/LICENCE.txt
@@ -268,10 +323,10 @@ class LookingGlass
             $type = '';
         }
 
-        $fail       = 0;
-        $match      = 0;
+        $fail = 0;
+        $match = 0;
         $traceCount = 0;
-        $lastFail   = 'start';
+        $lastFail = 'start';
         // iterate stdout
         while (($str = fgets($pipes[1], 4096)) != null) {
             // check for output buffer
@@ -286,17 +341,16 @@ class LookingGlass
             if ($type === 'mtr') {
                 // correct output for mtr
                 $parser->update($str);
-                echo '---' . PHP_EOL . $parser->__toString() . PHP_EOL . str_pad('', 4096) . PHP_EOL;
+                echo '---'.PHP_EOL.$parser->__toString().PHP_EOL.str_pad('', 4096).PHP_EOL;
 
                 // flush output buffering
                 @ob_flush();
                 flush();
                 continue;
-            }
-            // correct output for traceroute
+            } // correct output for traceroute
             elseif ($type === 'traceroute') {
                 if ($match < 10 && preg_match('/^[0-9] /', $str, $string)) {
-                    $str = preg_replace('/^[0-9] /', '&nbsp;' . $string[0], $str);
+                    $str = preg_replace('/^[0-9] /', '&nbsp;'.$string[0], $str);
                     $match++;
                 }
                 // check for consecutive failed hops
@@ -304,9 +358,9 @@ class LookingGlass
                     $fail++;
                     if ($lastFail !== 'start'
                         && ($traceCount - 1) === $lastFail
-                        &&  $fail >= $failCount
+                        && $fail >= $failCount
                     ) {
-                        echo str_pad($str . '<br />-- Traceroute timed out --<br />', 4096, ' ', STR_PAD_RIGHT);
+                        echo str_pad($str.'<br />-- Traceroute timed out --<br />', 4096, ' ', STR_PAD_RIGHT);
                         break;
                     }
                     $lastFail = $traceCount;
@@ -315,7 +369,7 @@ class LookingGlass
             }
 
             // pad string for live output
-            echo str_pad($str . '<br />', 4096, ' ', STR_PAD_RIGHT);
+            echo str_pad($str.'<br />', 4096, ' ', STR_PAD_RIGHT);
 
             // flush output buffering
             @ob_flush();
@@ -345,13 +399,73 @@ class LookingGlass
                 // kill remaining processes
                 foreach ($pids as $pid) {
                     if (is_numeric($pid)) {
-                        posix_kill((int) $pid, 9);
+                        posix_kill((int)$pid, 9);
                     }
                 }
             }
             proc_close($process);
         }
         return true;
+    }
+
+    public static function getLatency(): float
+    {
+        $getLatency = self::getLatencyFromSs(self::detectIpAddress());
+        if (isset($getLatency[0])) {
+            return (float)round($getLatency[0]['latency'], 2);
+        } else {
+            return 0.00;
+        }
+    }
+
+    /**
+     * This uses the command 'ss' in order to find out latency.
+     * A clever way coded by @ayyylias, so please keep credits and do not just steal.
+     *
+     * @param  string  $ip The command to execute.
+     * @return array  Returns an array with results.
+     */
+    private static function getLatencyFromSs(string $ip): array
+    {
+        $lines = shell_exec('/usr/sbin/ss -Hti state established');
+        $ss = [];
+        $i = 0;
+        $j = 0;
+        foreach (explode(PHP_EOL, $lines) as $line) {
+            if ($i > 1) {
+                $i = 0;
+                $j++;
+            }
+            if ($line !== '') {
+                @$ss[$j] .= $line;
+                $i++;
+            }
+        }
+        $output = [];
+        foreach ($ss as $socket) {
+            $socket = preg_replace('!\s+!', ' ', $socket);
+            $explodedsocket = explode(' ', $socket);
+            preg_match('/\d+\.\d+\.\d+\.\d+/', $explodedsocket[2], $temp);
+            if (!isset($temp[0])) {
+                continue;
+            } // when thsi cantt be filled just continue
+            $sock['local'] = $temp[0];
+            preg_match('/\d+\.\d+\.\d+\.\d+/', $explodedsocket[3], $temp);
+            $sock['remote'] = $temp[0];
+            preg_match('/segs_out:(\d+)/', $socket, $temp);
+            $sock['segs_out'] = $temp[1];
+            preg_match('/segs_in:(\d+)/', $socket, $temp);
+            $sock['segs_in'] = $temp[1];
+            preg_match_all('/rtt:(\d+\.\d+)\/(\d+\.\d+)/', $socket, $temp);
+            $sock['latency'] = $temp[1][0];
+            $sock['jitter'] = $temp[2][0];
+            preg_match_all('/retrans:\d+\/(\d+)/', $socket, $temp);
+            $sock['retransmissions'] = (isset($temp[1][0]) ? $temp[1][0] : 0);
+            if ($sock['remote'] == $ip) {
+                $output[] = $sock;
+            }
+        }
+        return $output;
     }
 }
 
@@ -423,10 +537,10 @@ class Parser
 
             $hop->recieved = count($hop->timings);
             if (count($hop->timings)) {
-                $hop->last  = $hop->timings[count($hop->timings) - 1];
-                $hop->best  = $hop->timings[0];
+                $hop->last = $hop->timings[count($hop->timings) - 1];
+                $hop->best = $hop->timings[0];
                 $hop->worst = $hop->timings[0];
-                $hop->avg   = array_sum($hop->timings) / count($hop->timings);
+                $hop->avg = array_sum($hop->timings) / count($hop->timings);
             }
 
             if (count($hop->timings) > 1) {
@@ -434,7 +548,6 @@ class Parser
             }
 
             foreach ($hop->timings as $time) {
-
                 if ($hop->best > $time) {
                     $hop->best = $time;
                 }
@@ -483,10 +596,10 @@ class Parser
             return;
         }
 
-        $rawHop           = new RawHop();
+        $rawHop = new RawHop();
         $rawHop->dataType = $things[0];
-        $rawHop->idx      = (int)$things[1];
-        $rawHop->value    = $things[2];
+        $rawHop->idx = (int)$things[1];
+        $rawHop->value = $things[2];
 
         if ($this->hopCount < $rawHop->idx + 1) {
             $this->hopCount = $rawHop->idx + 1;
@@ -496,12 +609,12 @@ class Parser
             $this->hopsCollection[$rawHop->idx] = new Hop();
         }
 
-        $hop      = $this->hopsCollection[$rawHop->idx];
+        $hop = $this->hopsCollection[$rawHop->idx];
         $hop->idx = $rawHop->idx;
         switch ($rawHop->dataType) {
             case 'h':
-                $hop->ips[]   = $rawHop->value;
-                $hop->hosts[] = gethostbyaddr($rawHop->value) ? : null;
+                $hop->ips[] = $rawHop->value;
+                $hop->hosts[] = gethostbyaddr($rawHop->value) ?: null;
                 break;
             case 'd':
                 //Not entirely sure if multiple IPs. Better use -n in mtr and resolve later in summarize.
@@ -523,13 +636,13 @@ class Parser
     private function filterLastDupeHop()
     {
         // filter dupe last hop
-        $finalIdx   = 0;
+        $finalIdx = 0;
         $previousIp = '';
 
         foreach ($this->hopsCollection as $key => $hop) {
             if (count($hop->ips) && $hop->ips[0] !== $previousIp) {
                 $previousIp = $hop->ips[0];
-                $finalIdx   = $key + 1;
+                $finalIdx = $key + 1;
             }
         }
 
