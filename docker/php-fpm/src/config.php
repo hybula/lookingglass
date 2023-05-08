@@ -8,6 +8,8 @@ const LG_TITLE = 'Looking Glass';
 const LG_LOGO = '<h2>Company Looking Glass</h2>';
 // Define the URL where the logo points to;
 const LG_LOGO_URL = 'https://github.com/hybula/lookingglass/';
+// Define <head> content, this could be JS, CSS or meta tags;
+const LG_CUSTOM_HEAD = false;
 
 // Enable the latency check feature;
 const LG_CHECK_LATENCY = false;
@@ -22,7 +24,7 @@ const LG_BLOCK_NETWORK = true;
 const LG_BLOCK_LOOKINGGLAS = true;
 const LG_BLOCK_SPEEDTEST = true;
 // This enables the custom block, which you can use to add something custom to the LG;
-const LG_BLOCK_CUSTOM = false;
+define('LG_BLOCK_CUSTOM', getenv('ENABLE_CUSTOM_BLOCK') !== false);
 
 // Define a file here which will be used to display the custom block, can be PHP too which outputs HTML;
 const LG_CUSTOM_HTML = __DIR__.'/custom.html.php';
@@ -30,17 +32,17 @@ const LG_CUSTOM_HTML = __DIR__.'/custom.html.php';
 const LG_CUSTOM_PHP = __DIR__.'/custom.post.php';
 
 // Define the location of this network, usually a city and a country;
-const LG_LOCATION = 'Amsterdam, Netherlands';
+define('LG_LOCATION', getenv('LOCATION'));
 // Define a query location for the link to openstreetmap (eg: Amsterdam, Netherlands will be https://www.openstreetmap.org/search?query=Amsterdam, Netherlands)
-const LG_MAPS_QUERY = 'Amsterdam, Netherlands';
+define('LG_MAPS_QUERY', getenv('MAPS_QUERY'));
 // Define the facility where the network is located, usually a data center;
-const LG_FACILITY = 'Nikhef';
+define('LG_FACILITY', getenv('FACILITY'));
 // Define a direct link to more information about the facility, this should be a link to PeeringDB;
-const LG_FACILITY_URL = 'https://www.peeringdb.com/fac/18';
+define('LG_FACILITY_URL', getenv('FACILITY_URL'));
 // Define an IPv4 for testing;
-const LG_IPV4 = '127.0.0.1';
+define('LG_IPV4', getenv('IPV4_ADDRESS'));
 // Define an IPv6 for testing;
-const LG_IPV6 = '::1';
+define('LG_IPV6', getenv('IPV6_ADDRESS'));
 
 // Define the methods that can be used by visitors to test it out;
 const LG_METHODS = [
@@ -59,7 +61,7 @@ const LG_LOCATIONS = [
     'Location C' => 'https://github.com/hybula/lookingglass/',
 ];
 
-// Enable the iPerf info inside the speedtest block, set to false to disable;
+// Enable the iPerf info inside the speedtest block, set too false to disable;
 const LG_SPEEDTEST_IPERF = true;
 // Define the label of an incoming iPerf test;
 const LG_SPEEDTEST_LABEL_INCOMING = 'iPerf3 Incoming';
@@ -77,4 +79,4 @@ const LG_SPEEDTEST_FILES = [
 ];
 
 // Define if you require visitors to agree with the Terms, set false to disable;
-const LG_TERMS = 'https://github.com/hybula/lookingglass/';
+define('LG_TERMS', getenv('LG_TERMS') ?: 'https://github.com/hybula/lookingglass/');
