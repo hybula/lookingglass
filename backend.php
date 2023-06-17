@@ -19,6 +19,8 @@ use Hybula\LookingGlass;
 LookingGlass::validateConfig();
 LookingGlass::startSession();
 
+header('X-Accel-Buffering: no');
+
 if (isset($_SESSION[LookingGlass::SESSION_TARGET_HOST]) &&
     isset($_SESSION[LookingGlass::SESSION_TARGET_METHOD]) &&
     isset($_SESSION[LookingGlass::SESSION_CALL_BACKEND])
