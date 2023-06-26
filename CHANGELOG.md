@@ -6,10 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.2.0 - 2023-06-26
+### Fixed
+- PR https://github.com/hybula/lookingglass/pull/21 thanks to @JKJameson.
+- Issue #20 thanks to @amirgilan for reporting.
+
+### Added
+- Latency feature (by default disabled).
+
 ## 1.1.3 - 2023-03-01
 ### Fixed
-- Issue #12 with https://github.com/hybula/lookingglass/pull/14 thanks to @MarcHagen
-- Issue #13 with https://github.com/hybula/lookingglass/pull/15 thanks to @MarcHagen
+- Issue #12 with https://github.com/hybula/lookingglass/pull/14 thanks to @MarcHagen.
+- Issue #13 with https://github.com/hybula/lookingglass/pull/15 thanks to @MarcHagen.
 
 ## 1.1.2 - 2023-01-05
 ### Fixed
