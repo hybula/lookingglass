@@ -304,8 +304,14 @@ class LookingGlass
             2 => ['pipe', 'w']
         ];
 
+        $sanitizedHost = filter_var($host, FILTER_SANITIZE_URL);
+
+        if (false === $sanitizedHost) {
+            return false;
+        }
+
         // sanitize + remove single quotes
-        $host = str_replace('\'', '', filter_var($host, FILTER_SANITIZE_URL));
+        $host = str_replace('\'', '', $sanitizedHost);
         // execute command
         $process = proc_open("{$cmd} '{$host}'", $spec, $pipes, null);
 
@@ -314,10 +320,15 @@ class LookingGlass
             return false;
         }
 
+        // check if pipes were returned
+        if (empty($pipes)) {
+            return false;
+        }
+
+        $parser = new Parser();
         // check for mtr/traceroute
         if (strpos($cmd, 'mtr') !== false) {
             $type = 'mtr';
-            $parser = new Parser();
         } elseif (strpos($cmd, 'traceroute') !== false) {
             $type = 'traceroute';
         } else {
@@ -355,7 +366,7 @@ class LookingGlass
                     $match++;
                 }
                 // check for consecutive failed hops
-                if (strpos($str, '* * *') !== false) {
+                if (strpos($str ?? '', '* * *') !== false) {
                     $fail++;
                     if ($lastFail !== 'start'
                         && ($traceCount - 1) === $lastFail
@@ -398,9 +409,11 @@ class LookingGlass
                 // use ps to get all the children of this process
                 $pids = preg_split('/\s+/', 'ps -o pid --no-heading --ppid '.$status['pid']);
                 // kill remaining processes
-                foreach ($pids as $pid) {
-                    if (is_numeric($pid)) {
-                        posix_kill((int)$pid, 9);
+                if (!empty($pids)) {
+                    foreach ($pids as $pid) {
+                        if (is_numeric($pid)) {
+                            posix_kill((int)$pid, 9);
+                        }
                     }
                 }
             }
@@ -424,11 +437,16 @@ class LookingGlass
      * A clever way coded by @ayyylias, so please keep credits and do not just steal.
      *
      * @param  string  $ip  The command to execute.
-     * @return array  Returns an array with results.
+     * @return mixed[]  Returns an array with results.
      */
     private static function getLatencyFromSs(string $ip): array
     {
         $lines = shell_exec('/usr/sbin/ss -Hti state established');
+
+        if (empty($lines)) {
+            return [];
+        }
+
         $ss = [];
         $i = 0;
         $j = 0;
@@ -445,6 +463,11 @@ class LookingGlass
         $output = [];
         foreach ($ss as $socket) {
             $socket = preg_replace('!\s+!', ' ', $socket);
+
+            if (empty($socket)) {
+                continue;
+            }
+
             $explodedsocket = explode(' ', $socket);
             preg_match('/\d+\.\d+\.\d+\.\d+/', $explodedsocket[2], $temp);
             if (!isset($temp[0])) {
@@ -495,11 +518,10 @@ class Hop
 
     /** @var string[] */
     public $ips = [];
-    /** @var string[] */
+    /** @var string[]|null[] */
     public $hosts = [];
     /** @var float[] */
     public $timings = [];
-
 }
 
 class RawHop
@@ -585,10 +607,26 @@ class Parser
         };
 
         // square root of sum of squares devided by N-1
-        return sqrt(array_sum(array_map($sdSquare, $array, array_fill(0, count($array), (array_sum($array) / count($array))))) / (count($array) - 1));
+        return sqrt(
+            array_sum(
+                array_map(
+                        $sdSquare,
+                        $array,
+                        array_fill(
+                            0,
+                            count($array),
+                            (
+                                array_sum($array)
+                                / count($array)
+                            )
+                        )
+                    )
+            )
+            / (count($array) - 1)
+        );
     }
 
-    public function update($rawMtrInput)
+    public function update(string $rawMtrInput): void
     {
         //Store each line of output in rawhop structure
         $things = explode(' ', $rawMtrInput);
@@ -610,7 +648,12 @@ class Parser
             $this->hopsCollection[$rawHop->idx] = new Hop();
         }
 
-        $hop = $this->hopsCollection[$rawHop->idx];
+        $hop = $this->hopsCollection[$rawHop->idx] ?? null;
+
+        if (empty($hop)) {
+            return;
+        }
+
         $hop->idx = $rawHop->idx;
         switch ($rawHop->dataType) {
             case 'h':
@@ -634,7 +677,7 @@ class Parser
 
     // Function to calculate standard deviation (uses sd_square)
 
-    private function filterLastDupeHop()
+    private function filterLastDupeHop(): void
     {
         // filter dupe last hop
         $finalIdx = 0;

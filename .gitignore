@@ -1,3 +1,4 @@
 .idea
 /config.php
 !php-fpm/src/config.php
+.php_cs.cache

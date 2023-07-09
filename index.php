@@ -15,7 +15,6 @@ require __DIR__.'/bootstrap.php';
 
 use Hybula\LookingGlass;
 
-
 $errorMessage = null;
 if (!empty($_POST)) {
     if (!isset($_POST['csrfToken']) || !isset($_SESSION[LookingGlass::SESSION_CSRF]) || ($_POST['csrfToken'] !== $_SESSION[LookingGlass::SESSION_CSRF])) {
@@ -47,7 +46,7 @@ if (!empty($_POST)) {
 
     if (in_array($_POST['backendMethod'], ['ping6', 'mtr6', 'traceroute6'])) {
         if (!LookingGlass::isValidIpv6($_POST['targetHost']) &&
-            !$targetHost = LookingGlass::isValidHost($_POST['targetHost'],LookingGlass::IPV6)
+            !$targetHost = LookingGlass::isValidHost($_POST['targetHost'], LookingGlass::IPV6)
         ) {
             exitErrorMessage('No valid IPv6 provided.');
         }
@@ -92,8 +91,12 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
     <meta content="Hybula" name="author">
     <title><?php echo $templateData['title'] ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <?php if ($templateData['custom_css']) { echo '<link href="'.$templateData['custom_css'].'" rel="stylesheet">'; } ?>
-    <?php if ($templateData['custom_head']) { echo $templateData['custom_head']; } ?>
+    <?php if ($templateData['custom_css']) {
+        echo '<link href="'.$templateData['custom_css'].'" rel="stylesheet">';
+    } ?>
+    <?php if ($templateData['custom_head']) {
+        echo $templateData['custom_head'];
+    } ?>
 </head>
 <body>
 
@@ -197,7 +200,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                                     <label class="input-group-text">Method</label>
                                     <select class="form-select" name="backendMethod" id="backendMethod">
                                         <?php foreach ($templateData['methods'] as $method): ?>
-                                            <option value="<?php echo $method ?>"<?php if($templateData['session_method'] === $method): ?> selected<?php endif ?>><?php echo $method ?></option>
+                                            <option value="<?php echo $method ?>"<?php if ($templateData['session_method'] === $method): ?> selected<?php endif ?>><?php echo $method ?></option>
                                         <?php endforeach ?>
                                     </select>
                                 </div>
@@ -294,7 +297,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 
                 for await (const chunk of readChunks(reader)) {
                     const text = decoder.decode(chunk)
-                    <?php if(in_array($_SESSION[LookingGlass::SESSION_TARGET_METHOD], [LookingGlass::METHOD_MTR, LookingGlass::METHOD_MTR6])): ?>
+                    <?php if (in_array($_SESSION[LookingGlass::SESSION_TARGET_METHOD], [LookingGlass::METHOD_MTR, LookingGlass::METHOD_MTR6])): ?>
                     let splittedText = text.split('---')
                     if (!splittedText[1]) {
                         continue
