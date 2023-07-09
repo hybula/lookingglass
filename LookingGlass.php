@@ -472,7 +472,7 @@ class LookingGlass
             }
         }
         return $output;
-    } 
+    }
 }
 
 class Hop
