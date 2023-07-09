@@ -429,10 +429,10 @@ class LookingGlass
     private static function getLatencyFromSs(string $ip): array
     {
         if (file_exists('/usr/sbin/ss')) {
-                $lines = shell_exec('/usr/sbin/ss -Hti state established'); // RHEL Directory for ss
-            } elseif (file_exists('/usr/bin/ss')) {
-                $lines = shell_exec('/usr/bin/ss -Hti state established'); // Debian Directory for ss
-            }
+            $lines = shell_exec('/usr/sbin/ss -Hti state established'); // RHEL Directory for ss
+        } elseif (file_exists('/usr/bin/ss')) {
+            $lines = shell_exec('/usr/bin/ss -Hti state established'); // Debian Directory for ss
+        }
         $ss = [];
         $i = 0;
         $j = 0;
