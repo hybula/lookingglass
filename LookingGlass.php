@@ -411,7 +411,7 @@ class LookingGlass
 
     public static function getLatency(): float
     {
-        $getLatency = self::getLatencyFromSs(self::detectIpAddress());
+        $getLatency = self::getLatencyFromSs(self::detectIpAddress());   
         if (isset($getLatency[0])) {
             return round((float)$getLatency[0]['latency']);
         } else {
@@ -428,7 +428,11 @@ class LookingGlass
      */
     private static function getLatencyFromSs(string $ip): array
     {
-        $lines = shell_exec('/usr/sbin/ss -Hti state established');
+        if (file_exists('/usr/sbin/ss')) {
+                $lines = shell_exec('/usr/sbin/ss -Hti state established'); // RHEL Directory for ss
+            } elseif (file_exists('/usr/bin/ss')) {
+                $lines = shell_exec('/usr/bin/ss -Hti state established'); // Debian Directory for ss
+            }
         $ss = [];
         $i = 0;
         $j = 0;
@@ -446,12 +450,13 @@ class LookingGlass
         foreach ($ss as $socket) {
             $socket = preg_replace('!\s+!', ' ', $socket);
             $explodedsocket = explode(' ', $socket);
-            preg_match('/\d+\.\d+\.\d+\.\d+/', $explodedsocket[2], $temp);
+            preg_match('/\d+\.\d+\.\d+\.\d+|\[[:a-fA-F0-9]+\]/', $explodedsocket[2], $temp);
             if (!isset($temp[0])) {
                 continue;
             }
             $sock['local'] = $temp[0];
-            preg_match('/\d+\.\d+\.\d+\.\d+/', $explodedsocket[3], $temp);
+            preg_match('/\d+\.\d+\.\d+\.\d+|\[[:a-fA-F0-9]+\]/', $explodedsocket[3], $temp);
+            if (preg_match('/^\[(.*)\]$/', $temp[0], $matches)) { $temp[0] = $matches[1]; }
             $sock['remote'] = $temp[0];
             preg_match('/segs_out:(\d+)/', $socket, $temp);
             $sock['segs_out'] = $temp[1];
@@ -467,7 +472,7 @@ class LookingGlass
             }
         }
         return $output;
-    }
+    } 
 }
 
 class Hop
