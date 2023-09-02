@@ -182,7 +182,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
             <div class="card shadow-lg">
                 <div class="card-body p-3">
                     <h1 class="fs-4 card-title mb-4">Looking Glass</h1>
-                    <form method="POST" action="/" autocomplete="off">
+                    <form method="POST" autocomplete="off">
                         <input type="hidden" name="csrfToken" value="<?php echo $templateData['csrfToken'] ?>">
 
                         <div class="row">
@@ -286,7 +286,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 
         outputCard.style.display = 'inherit'
 
-        fetch('/backend.php')
+        fetch('backend.php')
             .then(async (response) => {
                 // response.body is a ReadableStream
                 const reader = response.body.getReader()
