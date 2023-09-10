@@ -31,7 +31,7 @@ function exitErrorMessage(string $message): void
 
 function exitNormal(): void
 {
-    header('Location: /');
+    header("Refresh: 0");
     exit;
 }
 
