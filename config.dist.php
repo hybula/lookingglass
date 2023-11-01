@@ -29,6 +29,11 @@ const LG_CUSTOM_HTML = __DIR__.'/custom.html.php';
 // Define a file here which will be loaded on top of the index file, this can be used to do some post logic;
 const LG_CUSTOM_PHP = __DIR__.'/custom.post.php';
 
+// Define a file here which will be used to display the custom header. Will be at the top of file;
+const LG_CUSTOM_HEADER_PHP = __DIR__.'/custom.header.php';
+// Define a file here which will be used to display the custom footer. Will be at the bottom of file;
+const LG_CUSTOM_FOOTER_PHP = __DIR__.'/custom.footer.php';
+
 // Define the location of this network, usually a city and a country;
 const LG_LOCATION = 'Amsterdam, Netherlands';
 // Define a query location for the link to openstreetmap (eg: Amsterdam, Netherlands will be https://www.openstreetmap.org/search?query=Amsterdam, Netherlands)
