@@ -430,11 +430,10 @@ class LookingGlass
     {
         $ssPath = exec('which ss 2>/dev/null');
         if (empty($ssPath)) {
-            // RHEL based systems
+            // RHEL based systems;
             $ssPath = '/usr/sbin/ss';
         }
         $lines = shell_exec("$ssPath -Hnti state established");
-
         $ss = [];
         $i = 0;
         $j = 0;
@@ -451,22 +450,27 @@ class LookingGlass
         $output = [];
         foreach ($ss as $socket) {
             $socket = preg_replace('!\s+!', ' ', $socket);
-            preg_match('/^\d+\s+\d+\s+(?:\[::ffff:)?(?<localIp>[a-f0-9.:]+)]?:(?<localPort>\d+)\s+(?:\[::ffff:)?(?<remoteIp>[a-f0-9.:]+)]?:(?<remotePort>\d+)/', $line, $matches);
-            if ($matches['remoteIp'] !== $ip) {
+            $explodedsocket = explode(' ', $socket);
+            preg_match('/\d+\.\d+\.\d+\.\d+|\[[:a-fA-F0-9]+\]/', $explodedsocket[2], $temp);
+            if (!isset($temp[0])) {
                 continue;
             }
-            $sock['local'] = $matches['localIp'];
-            $sock['remote'] = $matches['remoteIp'];
+            $sock['local'] = $temp[0];
+            preg_match('/\d+\.\d+\.\d+\.\d+|\[[:a-fA-F0-9]+\]/', $explodedsocket[3], $temp);
+            if (preg_match('/^\[(.*)\]$/', $temp[0], $matches)) { $temp[0] = $matches[1]; }
+            $sock['remote'] = $temp[0];
             preg_match('/segs_out:(\d+)/', $socket, $temp);
             $sock['segs_out'] = $temp[1];
             preg_match('/segs_in:(\d+)/', $socket, $temp);
             $sock['segs_in'] = $temp[1];
-            preg_match('/rtt:(\d+\.\d+)\/(\d+\.\d+)/', $socket, $temp);
-            $sock['latency'] = $temp[1];
-            $sock['jitter'] = $temp[2];
-            preg_match('/retrans:\d+\/(\d+)/', $socket, $temp);
-            $sock['retransmissions'] = ($temp[1] ?? 0);
-            $output[] = $sock;
+            preg_match_all('/rtt:(\d+\.\d+)\/(\d+\.\d+)/', $socket, $temp);
+            $sock['latency'] = $temp[1][0];
+            $sock['jitter'] = $temp[2][0];
+            preg_match_all('/retrans:\d+\/(\d+)/', $socket, $temp);
+            $sock['retransmissions'] = (isset($temp[1][0]) ? $temp[1][0] : 0);
+            if ($sock['remote'] == $ip) {
+                $output[] = $sock;
+            }
         }
         return $output;
     }
