@@ -111,7 +111,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 
 <?php echo isset($templateData['custom_header']) ? $templateData['custom_header'] : '' ?>
 
-<div class="col-lg-6 mx-auto p-3 py-md-5">
+<div class="col-lg-8 mx-auto p-3 py-md-5">
 
     <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
             <div class="col-8">
