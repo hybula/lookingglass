@@ -8,8 +8,6 @@ const LG_TITLE = 'Looking Glass';
 const LG_LOGO = '<h2>Company Looking Glass</h2>';
 // Define the URL where the logo points to;
 const LG_LOGO_URL = 'https://github.com/hybula/lookingglass/';
-// Define <head> content, this could be JS, CSS or meta tags;
-const LG_CUSTOM_HEAD = false;
 
 // Enable the latency check feature;
 const LG_CHECK_LATENCY = false;
@@ -30,6 +28,11 @@ define('LG_BLOCK_CUSTOM', getenv('ENABLE_CUSTOM_BLOCK') !== false);
 const LG_CUSTOM_HTML = __DIR__.'/custom.html.php';
 // Define a file here which will be loaded on top of the index file, this can be used to do some post logic;
 const LG_CUSTOM_PHP = __DIR__.'/custom.post.php';
+
+// Define a file here which will be used to display the custom header. Will be at the top of file;
+const LG_CUSTOM_HEADER_PHP = __DIR__.'/custom.header.php';
+// Define a file here which will be used to display the custom footer. Will be at the bottom of file;
+const LG_CUSTOM_FOOTER_PHP = __DIR__.'/custom.footer.php';
 
 // Define the location of this network, usually a city and a country;
 define('LG_LOCATION', getenv('LOCATION'));
@@ -61,7 +64,7 @@ const LG_LOCATIONS = [
     'Location C' => 'https://github.com/hybula/lookingglass/',
 ];
 
-// Enable the iPerf info inside the speedtest block, set too false to disable;
+// Enable the iPerf info inside the speedtest block, set to false to disable;
 const LG_SPEEDTEST_IPERF = true;
 // Define the label of an incoming iPerf test;
 const LG_SPEEDTEST_LABEL_INCOMING = 'iPerf3 Incoming';
