@@ -75,9 +75,21 @@ if (LG_BLOCK_CUSTOM) {
     ob_start();
     include LG_CUSTOM_HTML;
     $templateData['custom_html'] = ob_get_clean();
+
+    if (defined('LG_CUSTOM_HEADER_PHP')) {
+        ob_start();
+        include LG_CUSTOM_HEADER_PHP;
+        $templateData['custom_header'] = ob_get_clean();
+    }
+
+    if (defined('LG_CUSTOM_FOOTER_PHP')) {
+        ob_start();
+        include LG_CUSTOM_FOOTER_PHP;
+        $templateData['custom_footer'] = ob_get_clean();
+    }
 }
 
-if (LG_CHECK_LATENCY && filter_var(LookingGlass::detectIpAddress(), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+if (LG_CHECK_LATENCY) {
     $templateData['latency'] = LookingGlass::getLatency();
 }
 
@@ -97,7 +109,9 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 </head>
 <body>
 
-<div class="col-lg-6 mx-auto p-3 py-md-5">
+<?php echo isset($templateData['custom_header']) ? $templateData['custom_header'] : '' ?>
+
+<div class="col-lg-8 mx-auto p-3 py-md-5">
 
     <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
             <div class="col-8">
@@ -167,7 +181,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                             <label class="mb-2 text-muted">Your IP</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" value="<?php echo $templateData['user_ip'] ?>" onfocus="this.select()" readonly="">
-                                <?php if (LG_CHECK_LATENCY && filter_var(LookingGlass::detectIpAddress(), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)): ?><label class="input-group-text" title="Latency between this looking glass and your connection." style="cursor: help;"><small><?php echo $templateData['latency'] ?> MS</small></label><?php endif ?>
+                                <?php if (LG_CHECK_LATENCY): ?><label class="input-group-text" title="Latency between this looking glass and your connection." style="cursor: help;"><small><?php echo $templateData['latency'] ?> MS</small></label><?php endif ?>
                             </div>
                         </div>
                     </div>
@@ -182,7 +196,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
             <div class="card shadow-lg">
                 <div class="card-body p-3">
                     <h1 class="fs-4 card-title mb-4">Looking Glass</h1>
-                    <form method="POST" action="/" autocomplete="off">
+                    <form method="POST" autocomplete="off">
                         <input type="hidden" name="csrfToken" value="<?php echo $templateData['csrfToken'] ?>">
 
                         <div class="row">
@@ -274,6 +288,8 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
     </footer>
 </div>
 
+<?php echo isset($templateData['custom_footer']) ? $templateData['custom_footer'] : '' ?>
+
 <?php if ($templateData['session_call_backend']): ?>
 <script type="text/javascript">
     (function () {
@@ -286,7 +302,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 
         outputCard.style.display = 'inherit'
 
-        fetch('/backend.php')
+        fetch('backend.php')
             .then(async (response) => {
                 // response.body is a ReadableStream
                 const reader = response.body.getReader()
