@@ -82,4 +82,4 @@ const LG_SPEEDTEST_FILES = [
 ];
 
 // Define if you require visitors to agree with the Terms, set false to disable;
-define('LG_TERMS', getenv('LG_TERMS') ?: 'https://github.com/hybula/lookingglass/');
+define('LG_TERMS', getenv('LG_TERMS') ?: false);
