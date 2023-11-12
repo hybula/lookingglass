@@ -81,5 +81,5 @@ const LG_SPEEDTEST_FILES = [
     '10G' => 'https://github.com/hybula/lookingglass/'
 ];
 
-// Define if you require visitors to agree with the Terms, set false to disable;
-const LG_TERMS = 'https://github.com/hybula/lookingglass/';
+// Define if you require visitors to agree with the Terms of Use. The value should be a link to the terms, or false to disable it completely.
+const LG_TERMS = false;
