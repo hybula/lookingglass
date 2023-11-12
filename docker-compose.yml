@@ -16,3 +16,16 @@ services:
       context: .
       dockerfile: docker/php-fpm/Dockerfile
     restart: unless-stopped
+    environment:
+      # For a better reference as to what these variables do, check out 'config.dist.php' or 'docker/php-fpm/src/config.php'.
+      # Please replace them with values that are relevant to your situation!
+      LOCATION: Location
+      FACILITY: Facility
+      FACILITY_URL: http://localhost/
+      IPV4_ADDRESS: 127.0.0.1
+      IPV6_ADDRESS: ::1
+      MAPS_QUERY: Amsterdam
+      # Uncomment to enable the custom block, which you can use to add something custom to the LG.
+      # ENABLE_CUSTOM_BLOCK: 'true'
+      # Uncomment if you require visitors to accept the Terms of Use; the value should be a link to the terms.
+      # LG_TERMS: http://localhost/
