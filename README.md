@@ -22,6 +22,7 @@ made user-friendly for everyone to use. It allows you to execute network related
 - Root access.
 
 ### Installation
+#### Manual
 For this installation we will assume that we are working on AlmaLinux 8 or 9. Warning: This guide does not cover any security hardening or rate limiting.
 Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead of 7.
 
@@ -33,6 +34,17 @@ Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead 
 6. Upload the contents of the ZIP to /var/www/html/.
 7. Rename config.dist.php to config.php and adjust the settings.
 8. (Optional) You might want to enable SSL using LetsEncrypt, take a look at [acme.sh](https://github.com/acmesh-official/acme.sh).
+
+#### Docker
+For installation using Docker, follow these steps and run the commands on the target machine where the application should be installed:
+
+1. First, ensure Docker and Docker Compose are already installed.
+2. Clone this GitHub repository: `git clone https://github.com/hybula/lookingglass.git`.
+3. Change your current working directory to the freshly cloned repository.
+4. Currently, the Docker images are not hosted on an image repository, so you'll have to build them yourself with the following command: `docker compose build`.
+5. For production use, change the environment variables inside the `docker-compose.yml` file to the desired values. For testing purposes, the default values are fine.
+6. Create and start the containers: `docker compose up -d`.
+7. Afterward, the Looking Glass should be reachable from your web browser at `http://$your_server_ip/`!
 
 ### Upgrading
 Upgrading from a previous version is easy, simply overwrite your current installation with the new files. Then update your config.php accordingly, the script will automatically check for missing variables.
