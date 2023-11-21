@@ -14,6 +14,7 @@ made user-friendly for everyone to use. It allows you to execute network related
 - Easy to customize and to configure.
 - DNS checking to prevent unnecessary executions.
 - Latency feature from visitor to LG.
+- Dark/light/auto mode theme.
 
 ### Requirements
 - Any Linux distribution, this has been tested on RHEL 8 + 9.

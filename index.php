@@ -96,7 +96,7 @@ if (LG_CHECK_LATENCY) {
 $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(random_bytes(12));
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="<?php if (LG_THEME != 'auto') echo LG_THEME; ?>">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -115,8 +115,11 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 
     <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
             <div class="col-8">
-                <a class="d-flex align-items-center text-dark text-decoration-none" href="<?php echo $templateData['logo_url'] ?>" target="_blank">
+                <a class="d-flex align-items-center text-primary text-decoration-none color-mode-choice color-mode-light-visible" href="<?php echo $templateData['logo_url'] ?>" target="_blank">
                     <?php echo $templateData['logo_data'] ?>
+                </a>
+                <a class="d-flex align-items-center text-primary text-decoration-none color-mode-choice color-mode-dark-visible" href="<?php echo $templateData['logo_url'] ?>" target="_blank">
+                    <?php echo $templateData['logo_data_dark'] ?>
                 </a>
             </div>
             <div class="col-4 float-end">
@@ -234,7 +237,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                         <div class="alert alert-danger mt-3" role="alert"><?php echo $templateData['error_message'] ?></div>
                         <?php endif ?>
 
-                        <div class="card card-body bg-light mt-4" style="display: none;" id="outputCard">
+                        <div class="card card-body bg-dark text-light mt-4" style="display: none;" id="outputCard">
                             <pre id="outputContent" style="white-space: pre;word-wrap: normal;margin-bottom: 0;padding-bottom: 1rem;"></pre>
                         </div>
                     </form>
@@ -287,6 +290,32 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
         <a href="https://github.com/hybula/lookingglass" target="_blank" class="float-end"><img src="https://img.shields.io/github/stars/hybula/lookingglass?style=social" alt="GitHub"></a>
     </footer>
 </div>
+
+<script type="text/javascript">
+    function setThemeClass() {
+        const colorMode = document.querySelector("html").getAttribute("data-bs-theme");
+        const allDivs = document.querySelectorAll('.color-mode-choice')
+        allDivs.forEach((div) => {
+            div.classList.add('d-none')
+            if (div.matches('.color-mode-' + colorMode + '-visible')){
+                div.classList.remove('d-none')
+            }
+        })
+    };
+    setThemeClass();
+</script>
+
+<?php if (LG_THEME == 'auto'): ?>
+<script type="text/javascript">
+    function updateThemeHelper() {
+        const colorMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.querySelector("html").setAttribute("data-bs-theme", colorMode);
+        setThemeClass();
+    }
+    updateThemeHelper();
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeHelper);
+</script>
+<?php endif ?>
 
 <?php echo isset($templateData['custom_footer']) ? $templateData['custom_footer'] : '' ?>
 

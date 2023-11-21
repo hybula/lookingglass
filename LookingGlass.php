@@ -50,6 +50,9 @@ class LookingGlass
         if (!defined('LG_LOGO')) {
             die('LG_LOGO not found in config.php');
         }
+        if (!defined('LG_LOGO_DARK')) {
+            die('LG_LOGO_DARK not found in config.php');
+        }
         if (!defined('LG_LOGO_URL')) {
             die('LG_LOGO_URL not found in config.php');
         }
@@ -121,6 +124,9 @@ class LookingGlass
         }
         if (!defined('LG_CHECK_LATENCY')) {
             die('LG_CHECK_LATENCY not found in config.php');
+        }
+        if (!defined('LG_THEME')) {
+            die('LG_THEME not found in config.php');
         }
         //@formatter:on
     }
