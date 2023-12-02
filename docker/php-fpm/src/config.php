@@ -26,6 +26,7 @@ const LG_CUSTOM_HEAD = false;
 const LG_BLOCK_NETWORK = true;
 const LG_BLOCK_LOOKINGGLAS = true;
 const LG_BLOCK_SPEEDTEST = true;
+const LG_BLOCK_LOOKINGGLASS = true;
 // This enables the custom block, which you can use to add something custom to the LG;
 define('LG_BLOCK_CUSTOM', getenv('ENABLE_CUSTOM_BLOCK') !== false);
 

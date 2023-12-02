@@ -194,7 +194,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
         </div>
         <?php endif ?>
 
-        <?php if (LG_BLOCK_LOOKINGGLAS): ?>
+        <?php if (LG_BLOCK_LOOKINGGLASS): ?>
         <div class="row pb-5">
             <div class="card shadow-lg">
                 <div class="card-body p-3">
