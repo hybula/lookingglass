@@ -24,7 +24,7 @@ const LG_CUSTOM_HEAD = false;
 
 // Enable or disable blocks/parts of the LG, set false to hide a part;
 const LG_BLOCK_NETWORK = true;
-const LG_BLOCK_LOOKINGGLAS = true;
+const LG_BLOCK_LOOKINGGLASS = true;
 const LG_BLOCK_SPEEDTEST = true;
 // This enables the custom block, which you can use to add something custom to the LG;
 const LG_BLOCK_CUSTOM = false;

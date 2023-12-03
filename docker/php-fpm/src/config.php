@@ -22,12 +22,12 @@ const LG_CSS_OVERRIDES = false;
 // Define <head> content, this could be JS, CSS or meta tags;
 const LG_CUSTOM_HEAD = false;
 
-// Enable or disable blocks/parts of the LG, set false to hide a part;
-const LG_BLOCK_NETWORK = true;
-const LG_BLOCK_LOOKINGGLAS = true;
-const LG_BLOCK_SPEEDTEST = true;
+// Enable or disable blocks/parts of the LG, pass these environment variables with any value to disable them;
+define('LG_BLOCK_NETWORK', !isset($_ENV['DISABLE_BLOCK_NETWORK']));
+define('LG_BLOCK_LOOKINGGLASS', !isset($_ENV['DISABLE_BLOCK_LOOKINGGLASS']));
+define('LG_BLOCK_SPEEDTEST', !isset($_ENV['DISABLE_BLOCK_SPEEDTEST']));
 // This enables the custom block, which you can use to add something custom to the LG;
-define('LG_BLOCK_CUSTOM', getenv('ENABLE_CUSTOM_BLOCK') !== false);
+define('LG_BLOCK_CUSTOM', isset($_ENV['ENABLE_CUSTOM_BLOCK']));
 
 // Define a file here which will be used to display the custom block, can be PHP too which outputs HTML;
 const LG_CUSTOM_HTML = __DIR__.'/custom.html.php';

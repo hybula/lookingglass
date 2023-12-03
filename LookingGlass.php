@@ -62,8 +62,8 @@ class LookingGlass
         if (!defined('LG_BLOCK_NETWORK')) {
             die('LG_BLOCK_NETWORK not found in config.php');
         }
-        if (!defined('LG_BLOCK_LOOKINGGLAS')) {
-            die('LG_BLOCK_LOOKINGGLAS not found in config.php');
+        if (!defined('LG_BLOCK_LOOKINGGLASS')) {
+            die('LG_BLOCK_LOOKINGGLASS not found in config.php');
         }
         if (!defined('LG_BLOCK_SPEEDTEST')) {
             die('LG_BLOCK_SPEEDTEST not found in config.php');
