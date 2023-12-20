@@ -25,6 +25,10 @@ services:
       IPV4_ADDRESS: 127.0.0.1
       IPV6_ADDRESS: ::1
       MAPS_QUERY: Amsterdam
+      # Pass these variables with any arbitrary value to disable the respective block.
+      # DISABLE_BLOCK_NETWORK: 'true'
+      # DISABLE_BLOCK_LOOKINGGLASS: 'true'
+      # DISABLE_BLOCK_SPEEDTEST: 'true'
       # Uncomment to enable the custom block, which you can use to add something custom to the LG.
       # ENABLE_CUSTOM_BLOCK: 'true'
       # Uncomment if you require visitors to accept the Terms of Use; the value should be a link to the terms.

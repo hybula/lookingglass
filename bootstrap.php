@@ -44,7 +44,7 @@ $templateData           = [
     'logo_data_dark'                => LG_LOGO_DARK,
     //
     'block_network'            => LG_BLOCK_NETWORK,
-    'block_lookingglas'        => LG_BLOCK_LOOKINGGLAS,
+    'block_lookingglass'       => LG_BLOCK_LOOKINGGLASS,
     'block_speedtest'          => LG_BLOCK_SPEEDTEST,
     'block_custom'             => LG_BLOCK_CUSTOM,
     'custom_html'              => '',

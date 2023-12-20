@@ -70,19 +70,23 @@ if (isset($_SESSION[LookingGlass::SESSION_ERROR_MESSAGE])) {
 }
 
 if (LG_BLOCK_CUSTOM) {
-    include LG_CUSTOM_PHP;
+    if (defined('LG_CUSTOM_PHP') && file_exists(LG_CUSTOM_PHP)) {
+        include LG_CUSTOM_PHP;
+    }
 
-    ob_start();
-    include LG_CUSTOM_HTML;
-    $templateData['custom_html'] = ob_get_clean();
+    if (defined('LG_CUSTOM_HTML') && file_exists(LG_CUSTOM_HTML)) {
+        ob_start();
+        include LG_CUSTOM_HTML;
+        $templateData['custom_html'] = ob_get_clean();
+    }
 
-    if (defined('LG_CUSTOM_HEADER_PHP')) {
+    if (defined('LG_CUSTOM_HEADER_PHP') && file_exists(LG_CUSTOM_HEADER_PHP)) {
         ob_start();
         include LG_CUSTOM_HEADER_PHP;
         $templateData['custom_header'] = ob_get_clean();
     }
 
-    if (defined('LG_CUSTOM_FOOTER_PHP')) {
+    if (defined('LG_CUSTOM_FOOTER_PHP') && file_exists(LG_CUSTOM_FOOTER_PHP)) {
         ob_start();
         include LG_CUSTOM_FOOTER_PHP;
         $templateData['custom_footer'] = ob_get_clean();
@@ -194,7 +198,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
         </div>
         <?php endif ?>
 
-        <?php if (LG_BLOCK_LOOKINGGLAS): ?>
+        <?php if (LG_BLOCK_LOOKINGGLASS): ?>
         <div class="row pb-5">
             <div class="card shadow-lg">
                 <div class="card-body p-3">
