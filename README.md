@@ -66,5 +66,13 @@ We would love to receive code contributions in the form of a pull request. We pr
 ### Credits
 This project is inspired by the [LookingGlass project](https://github.com/telephone/LookingGlass) of @telephone and uses his procExecute() function, although slightly modified.
 
+### Sponsored
+This project is developed and sponsored by [Hybula B.V.](https://www.hybula.com/)
+<p>
+  <a href="https://www.hybula.com/">
+    <img src="https://www.hybula.com/assets/hybula/logo/logo-primary.svg" height="40px">
+  </a>
+</p>
+
 ### License
-Mozilla Public License Version 2.0
+```Apache License, Version 2.0 and the Commons Clause Restriction```
