@@ -439,7 +439,7 @@ class LookingGlass
             // RHEL based systems;
             $ssPath = '/usr/sbin/ss';
         }
-        $lines = shell_exec("$ssPath -Hnti state established");
+        $lines = shell_exec("$ssPath -Hintp state established");
         $ss = [];
         $i = 0;
         $j = 0;
