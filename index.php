@@ -271,7 +271,8 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                         </div>
                     </div>
                     <?php endif ?>
-
+    
+					<?php if (count($templateData['speedtest_files'])): ?>
                     <div class="row">
                         <label class="mb-2 text-muted">Test Files</label>
                         <div class="btn-group input-group mb-3">
@@ -280,6 +281,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                             <?php endforeach ?>
                         </div>
                     </div>
+					<?php endif ?>
 
                 </div>
             </div>
