@@ -15,7 +15,7 @@ const LG_LOGO_URL = 'https://github.com/hybula/lookingglass/';
 const LG_THEME = 'auto';
 
 // Enable the latency check feature;
-const LG_CHECK_LATENCY = false;
+const LG_CHECK_LATENCY = true;
 
 // Define a custom CSS file which can be used to style the LG, set false to disable, else point to the CSS file;
 const LG_CSS_OVERRIDES = false;
@@ -63,28 +63,30 @@ const LG_METHODS = [
 ];
 
 // Define other looking glasses, this is useful if you have multiple networks and looking glasses;
-const LG_LOCATIONS = [
+/* const LG_LOCATIONS = [
     'Location A' => 'https://github.com/hybula/lookingglass/',
     'Location B' => 'https://github.com/hybula/lookingglass/',
     'Location C' => 'https://github.com/hybula/lookingglass/',
-];
+]; */
+const LG_LOCATIONS = [];
 
 // Enable the iPerf info inside the speedtest block, set to false to disable;
 const LG_SPEEDTEST_IPERF = true;
 // Define the label of an incoming iPerf test;
 const LG_SPEEDTEST_LABEL_INCOMING = 'iPerf3 Incoming';
 // Define the command to use to test incoming speed using iPerf, preferable iPerf3;
-const LG_SPEEDTEST_CMD_INCOMING = 'iperf3 -4 -c hostname -p 5201 -P 4';
+const LG_SPEEDTEST_CMD_INCOMING = 'iperf3 -4 -c ' . LG_IPV4 . ' -p 5201 -P 4';
 // Define the label of an outgoing iPerf test;
 const LG_SPEEDTEST_LABEL_OUTGOING = 'iPerf3 Outgoing';
 // Define the command to use to test outgoing speed using iPerf, preferable iPerf3;
-const LG_SPEEDTEST_CMD_OUTGOING = 'iperf3 -4 -c hostname -p 5201 -P 4 -R';
+const LG_SPEEDTEST_CMD_OUTGOING = 'iperf3 -4 -c ' . LG_IPV4 . ' -p 5201 -P 4 -R';
 // Define speedtest files with URLs to the actual files;
-const LG_SPEEDTEST_FILES = [
+/* const LG_SPEEDTEST_FILES = [
     '100M' => 'https://github.com/hybula/lookingglass/',
     '1G' => 'https://github.com/hybula/lookingglass/',
     '10G' => 'https://github.com/hybula/lookingglass/'
-];
+]; */
+const LG_SPEEDTEST_FILES = [];
 
 // Define if you require visitors to agree with the Terms of Use. The value should be a link to the terms, or false to disable it completely.
 define('LG_TERMS', getenv('LG_TERMS') ?: false);
