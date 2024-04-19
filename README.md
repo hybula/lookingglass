@@ -27,14 +27,16 @@ made user-friendly for everyone to use. It allows you to execute network related
 For this installation we will assume that we are working on AlmaLinux 8 or 9. Warning: This guide does not cover any security hardening or rate limiting.
 Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead of 7.
 
-1. Install the required network tools: `dnf install mtr traceroute -y`.
+1. Install the required network tools: `dnf install mtr traceroute iperf3 -y`.
 2. Install the web server with PHP (by default it will install 7.2 on RHEL 8): `dnf install httpd mod_ssl php php-posix -y`.
-3. Enable and start Apache/PHP-FPM: `systemctl enable httpd; systemctl enable php-fpm` and `systemctl start httpd; systemctl start php-fpm`.
+3. Enable and start Apache/PHP-FPM: `systemctl enable --now httpd && systemctl enable --now php-fpm`.
 4. Let's help MTR to work, execute the following command: `ln -s /usr/sbin/mtr /usr/bin/mtr` and also mtr helper called mtr-packet: `ln -s /usr/sbin/mtr-packet /usr/bin/mtr-packet`.
 5. You *must* configure SELinux before this all works, or you can disable SELinux using `setenforce 0` and possibly make it permanent: `nano /etc/selinux/config` change to `SELINUX=disabled`.
-6. Upload the contents of the ZIP to /var/www/html/.
-7. Rename config.dist.php to config.php and adjust the settings.
-8. (Optional) You might want to enable SSL using LetsEncrypt, take a look at [acme.sh](https://github.com/acmesh-official/acme.sh).
+6. Launch iPerf3 as a daemon: `iperf3 -sD -p 5201`.
+7. (Optional) You might want to add a systemd unit file for iPerf3, so it automatically starts when the system boots up.
+8. Upload the contents of the ZIP to /var/www/html/.
+9. Rename config.dist.php to config.php and adjust the settings.
+10. (Optional) You might want to enable SSL using LetsEncrypt, take a look at [acme.sh](https://github.com/acmesh-official/acme.sh).
 
 #### Docker
 For installation using Docker, follow these steps and run the commands on the target machine where the application should be installed:
