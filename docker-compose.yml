@@ -34,11 +34,11 @@ services:
       # Uncomment if you require visitors to accept the Terms of Use; the value should be a link to the terms.
       # LG_TERMS: http://localhost/
 
-  iperf3:
-    image: networkstatic/iperf3:latest
-    container_name: lg-iperf3
-    network_mode: host
-    command: -s
-    tty: true
-    stdin_open: true
-    restart: unless-stopped
+  # iperf3:
+  #   image: networkstatic/iperf3:latest
+  #   container_name: lg-iperf3
+  #   network_mode: host
+  #   command: -s
+  #   tty: true
+  #   stdin_open: true
+  #   restart: unless-stopped
