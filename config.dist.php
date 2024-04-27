@@ -75,11 +75,11 @@ const LG_SPEEDTEST_IPERF = true;
 // Define the label of an incoming iPerf test;
 const LG_SPEEDTEST_LABEL_INCOMING = 'iPerf3 Incoming';
 // Define the command to use to test incoming speed using iPerf, preferable iPerf3;
-const LG_SPEEDTEST_CMD_INCOMING = 'iperf3 -4 -c ' . LG_IPV4 . ' -p 5201 -P 4';
+const LG_SPEEDTEST_CMD_INCOMING = 'iperf3 -4 -c hostname -p 5201 -P 4';
 // Define the label of an outgoing iPerf test;
 const LG_SPEEDTEST_LABEL_OUTGOING = 'iPerf3 Outgoing';
 // Define the command to use to test outgoing speed using iPerf, preferable iPerf3;
-const LG_SPEEDTEST_CMD_OUTGOING = 'iperf3 -4 -c ' . LG_IPV4 . ' -p 5201 -P 4 -R';
+const LG_SPEEDTEST_CMD_OUTGOING = 'iperf3 -4 -c hostname -p 5201 -P 4 -R';
 // Define speedtest files with URLs to the actual files;
 /* const LG_SPEEDTEST_FILES = [
     '100M' => 'https://github.com/hybula/lookingglass/',
