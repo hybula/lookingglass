@@ -15,7 +15,7 @@ const LG_LOGO_URL = 'https://github.com/hybula/lookingglass/';
 const LG_THEME = 'auto';
 
 // Enable the latency check feature;
-const LG_CHECK_LATENCY = false;
+const LG_CHECK_LATENCY = true;
 
 // Define a custom CSS file which can be used to style the LG, set false to disable, else point to the CSS file;
 const LG_CSS_OVERRIDES = false;

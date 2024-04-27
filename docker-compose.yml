@@ -1,20 +1,20 @@
-version: "3.8"
-
 services:
   nginx:
     image: hybula/lookingglass-nginx:1
+    container_name: lg-nginx
     build:
-      context: docker/nginx
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    network_mode: host
     restart: unless-stopped
 
   php-fpm:
     image: hybula/lookingglass-php:1
+    container_name: lg-php
     build:
       context: .
       dockerfile: docker/php-fpm/Dockerfile
+    network_mode: host
     restart: unless-stopped
     environment:
       # For a better reference as to what these variables do, check out 'config.dist.php' or 'docker/php-fpm/src/config.php'.
@@ -33,3 +33,12 @@ services:
       # ENABLE_CUSTOM_BLOCK: 'true'
       # Uncomment if you require visitors to accept the Terms of Use; the value should be a link to the terms.
       # LG_TERMS: http://localhost/
+
+  # iperf3:
+  #   image: networkstatic/iperf3:latest
+  #   container_name: lg-iperf3
+  #   network_mode: host
+  #   command: -s
+  #   tty: true
+  #   stdin_open: true
+  #   restart: unless-stopped

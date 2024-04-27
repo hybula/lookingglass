@@ -29,7 +29,7 @@ Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead 
 
 1. Install the required network tools: `dnf install mtr traceroute -y`.
 2. Install the web server with PHP (by default it will install 7.2 on RHEL 8): `dnf install httpd mod_ssl php php-posix -y`.
-3. Enable and start Apache/PHP-FPM: `systemctl enable httpd; systemctl enable php-fpm` and `systemctl start httpd; systemctl start php-fpm`.
+3. Enable and start Apache/PHP-FPM: `systemctl enable --now httpd && systemctl enable --now php-fpm`.
 4. Let's help MTR to work, execute the following command: `ln -s /usr/sbin/mtr /usr/bin/mtr` and also mtr helper called mtr-packet: `ln -s /usr/sbin/mtr-packet /usr/bin/mtr-packet`.
 5. You *must* configure SELinux before this all works, or you can disable SELinux using `setenforce 0` and possibly make it permanent: `nano /etc/selinux/config` change to `SELINUX=disabled`.
 6. Upload the contents of the ZIP to /var/www/html/.
@@ -46,6 +46,24 @@ For installation using Docker, follow these steps and run the commands on the ta
 5. For production use, change the environment variables inside the `docker-compose.yml` file to the desired values. For testing purposes, the default values are fine.
 6. Create and start the containers: `docker compose up -d`.
 7. Afterward, the Looking Glass should be reachable from your web browser at `http://$your_server_ip/`!
+
+### iPerf3 Installation (Optional)
+> It is recommended to install iPerf3 on a different server from your looking glass to avoid network congestion.
+
+#### Manual
+Again, we will assume that we are working on AlmaLinux 8 or 9.
+1. Install iPerf3: `dnf install iperf3 -y`
+2. Launch iPerf3 as a daemon: `iperf3 -sD -p 5201`.
+3. (Optional) You might want to add a systemd unit file for iPerf3, so it automatically starts when the system boots up.
+4. Locate the two lines containing `LG_SPEEDTEST_CMD_INCOMING` and `LG_SPEEDTEST_CMD_OUTGOING` respectively in `config.php`.
+5. Change `hostname` in these lines to the IPv4 address of your iPerf3 server.
+
+#### Docker
+1. Uncomment the section for `iperf3` in `docker-compose.yml` if you want iPerf3 and the looking glass to be on the same server.
+Otherwise, please copy the `iperf3` section and save it as `docker-compose.yml` on another server with Docker and Docker Compose installed.
+2. Start the iPerf3 container: `docker compose up -d`.
+3. Locate the two lines containing `LG_SPEEDTEST_CMD_INCOMING` and `LG_SPEEDTEST_CMD_OUTGOING` respectively in `docker/php-fpm/src/config.php`.
+5. Change `hostname` in these lines to the IPv4 address of your iPerf3 server.
 
 ### Upgrading
 Upgrading from a previous version is easy, simply overwrite your current installation with the new files. Then update your config.php accordingly, the script will automatically check for missing variables.

@@ -130,7 +130,9 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                 <select class="form-select" onchange="window.location = this.options[this.selectedIndex].value" <?php if (count($templateData['locations']) == 0) echo 'disabled'; ?>>
                     <option selected><?php echo $templateData['current_location'] ?></option>
                     <?php foreach ($templateData['locations'] as $location => $link): ?>
-                        <option value="<?php echo $link ?>"><?php echo $location ?></option>
+                        <?php if ($location !== $templateData['current_location']): ?>
+                            <option value="<?php echo $link ?>"><?php echo $location ?></option>
+                        <?php endif ?>
                     <?php endforeach ?>
                 </select>
             </div>
@@ -171,14 +173,14 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 
                     <div class="row mb-3">
                         <div class="col-md-3">
-                            <label class="mb-2 text-muted">Test IPv4</label>
+                            <label class="mb-2 text-muted">Looking Glass IPv4</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" value="<?php echo $templateData['ipv4'] ?>" onfocus="this.select()" readonly="">
                                 <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo $templateData['ipv4'] ?>', this)">Copy</button>
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <label class="mb-2 text-muted">Test IPv6</label>
+                            <label class="mb-2 text-muted">Looking Glass IPv6</label>
                             <div class="input-group">
                                 <input type="text" class="form-control" value="<?php echo $templateData['ipv6'] ?>" onfocus="this.select()" readonly="">
                                 <button class="btn btn-outline-secondary" onclick="copyToClipboard('<?php echo $templateData['ipv6'] ?>', this)">Copy</button>
@@ -272,7 +274,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                     </div>
                     <?php endif ?>
     
-					<?php if (count($templateData['speedtest_files'])): ?>
+                    <?php if (count($templateData['speedtest_files'])): ?>
                     <div class="row">
                         <label class="mb-2 text-muted">Test Files</label>
                         <div class="btn-group input-group mb-3">
@@ -281,7 +283,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                             <?php endforeach ?>
                         </div>
                     </div>
-					<?php endif ?>
+                    <?php endif ?>
 
                 </div>
             </div>
