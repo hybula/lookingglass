@@ -348,7 +348,7 @@ class LookingGlass
             if ($type === 'mtr') {
                 // correct output for mtr
                 $parser->update($str);
-                echo '---'.PHP_EOL.$parser->__toString().PHP_EOL.str_pad('', 4096).PHP_EOL;
+                echo '@@@'.PHP_EOL.$parser->__toString().PHP_EOL.str_pad('', 4096).PHP_EOL;
 
                 // flush output buffering
                 @ob_flush();

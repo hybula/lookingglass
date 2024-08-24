@@ -348,7 +348,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                 for await (const chunk of readChunks(reader)) {
                     const text = decoder.decode(chunk)
                     <?php if(in_array($_SESSION[LookingGlass::SESSION_TARGET_METHOD], [LookingGlass::METHOD_MTR, LookingGlass::METHOD_MTR6])): ?>
-                    let splittedText = text.split('---')
+                    let splittedText = text.split('@@@')
                     if (!splittedText[1]) {
                         continue
                     }
