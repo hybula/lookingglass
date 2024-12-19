@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-bullseye
+FROM php:8.4.1-fpm-bullseye
 
 RUN apt-get update && \
     apt-get --no-install-recommends -y install iputils-ping mtr traceroute iproute2 && \
