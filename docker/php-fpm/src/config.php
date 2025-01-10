@@ -5,11 +5,11 @@ use Hybula\LookingGlass;
 const LG_TITLE = 'Looking Glass';
 
 // Define a logo, this can be HTML too, see the other example for an image;
-const LG_LOGO = '<h2 style="color: #000000;">Company Looking Glass</h2>';
-const LG_LOGO_DARK = '<h2 style="color: #ffffff;">Company Looking Glass</h2>';
-
-// Define the URL where the logo points to;
-const LG_LOGO_URL = 'https://github.com/hybula/lookingglass/';
+define('LG_LOGO', getenv('LOGO'));
+define('LG_LOGO_DARK', getenv('LOGO_DARK'));
+ 
+ // Define the URL where the logo points to;
+define('LG_LOGO_URL', getenv('LOGO_URL'));
 
 // Theme mode;
 const LG_THEME = 'auto';
