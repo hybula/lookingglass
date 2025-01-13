@@ -22,6 +22,9 @@ services:
       LOCATION: Location
       FACILITY: Facility
       FACILITY_URL: http://localhost/
+      LOGO_URL: https://github.com/hybula/lookingglass/
+      LOGO: '<h2 style="color: #000000;">Company Looking Glass</h2>'
+      LOGO_DARK: '<h2 style="color: #ffffff;">Company Looking Glass</h2>'
       IPV4_ADDRESS: 127.0.0.1
       IPV6_ADDRESS: ::1
       MAPS_QUERY: Amsterdam
