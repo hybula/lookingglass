@@ -1,13 +1,13 @@
 # Looking Glass
-Modern, simple and fresh looking glass based on Bootstrap 5 and PHP 8 (also compatible with 7). A looking glass is a network utility which is
+Modern, super simple and fresh looking glass based on Bootstrap 5 and PHP 8 (also compatible with 7). A looking glass is a network utility which is
 made user-friendly for everyone to use. It allows you to execute network related commands within a remote network, usually that of an ISP.
 
 [![](screenshot.png)](https://lg-nl-ams.hybula.net/)
 
-### Demo
+## Demo
 [See it in action here!](https://lg-nl-ams.hybula.net/)
 
-### Features
+## Features
 - Bootstrap 5 UI.
 - Real time command output using JavaScript.
 - Supports ping/ping6, traceroute/traceroute6 and mtr/mtr6.
@@ -16,13 +16,13 @@ made user-friendly for everyone to use. It allows you to execute network related
 - Latency feature from visitor to LG.
 - Dark/light/auto mode theme.
 
-### Requirements
+## Requirements
 - Any Linux distribution, this has been tested on RHEL 8 + 9, for NetBSD users see [#47](https://github.com/hybula/lookingglass/issues/47).
 - PHP 7.1 or higher, PHP 8 preferred.
 - IPv6 connectivity if you want to use the v6 equivalents.
 - Root access.
 
-### Installation
+## Installation
 #### Manual
 For this installation we will assume that we are working on AlmaLinux 8 or 9. Warning: This guide does not cover any security hardening or rate limiting.
 Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead of 7.
@@ -34,7 +34,8 @@ Note: These steps also work with AlmaLinux 9, but it will install PHP 8 instead 
 5. You *must* configure SELinux before this all works, or you can disable SELinux using `setenforce 0` and possibly make it permanent: `nano /etc/selinux/config` change to `SELINUX=disabled`.
 6. Upload the contents of the ZIP to /var/www/html/.
 7. Rename config.dist.php to config.php and adjust the settings.
-8. (Optional) You might want to enable SSL using LetsEncrypt, take a look at [acme.sh](https://github.com/acmesh-official/acme.sh).
+8. (Optional) You can generate test files using the following command: `dd if=/dev/zero of=100MB.bin bs=1024 count=0 seek=$[1024*100]` (this is for 100MB).
+9. (Optional) You might want to enable SSL using LetsEncrypt, take a look at [acme.sh](https://github.com/acmesh-official/acme.sh).
 
 #### Docker
 For installation using Docker, follow these steps and run the commands on the target machine where the application should be installed:
@@ -65,32 +66,19 @@ Otherwise, please copy the `iperf3` section and save it as `docker-compose.yml` 
 3. Locate the two lines containing `LG_SPEEDTEST_CMD_INCOMING` and `LG_SPEEDTEST_CMD_OUTGOING` respectively in `docker/php-fpm/src/config.php`.
 5. Change `hostname` in these lines to the IPv4 address of your iPerf3 server.
 
-### Upgrading
+## Upgrading
 Upgrading from a previous version is easy, simply overwrite your current installation with the new files. Then update your config.php accordingly, the script will automatically check for missing variables.
 
-### Customization
+## Customization
 If you open up config.dist.php you will see that there are some features that allows you to customize the looking glass, this includes a custom CSS override.
 You may also extend the looking glass with a custom block.
 
-### TODO
-- Move to Composer;
-- Software-based rate limiting;
-- Implement a template engine, for advanced customization;
-- Switch to WebSockets.
-
-### Contribute
+## Contribute
 We would love to receive code contributions in the form of a pull request. We prefer this over forking, so if you have any code improvements feel free to commit.
 
-### Credits
+## Credits
 This project is inspired by the [LookingGlass project](https://github.com/telephone/LookingGlass) of @telephone and uses his procExecute() function, although slightly modified.
+It would be great to keep the "powered by" link the footer to help development of this project.
 
-### Sponsored
-This project is developed and sponsored by [Hybula B.V.](https://www.hybula.com/)
-<p>
-  <a href="https://www.hybula.com/">
-    <img src="https://www.hybula.com/assets/hybula/logo/logo-primary.svg" height="40px">
-  </a>
-</p>
-
-### License
+## License
 ```Apache License, Version 2.0 and the Commons Clause Restriction```
