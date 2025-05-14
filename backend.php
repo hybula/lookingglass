@@ -4,11 +4,11 @@
  *
  * Does the actual backend work for executed commands.
  *
- * @copyright 2022 Hybula B.V.
- * @license Mozilla Public License 2.0
- * @version 0.1
- * @since File available since release 0.1
- * @link https://github.com/hybula/lookingglass
+ * @copyright 2025 Hybula B.V.
+ * * @license Mozilla Public License 2.0
+ * * @version 1.3.6
+ * * @since File available since release 0.1
+ * * @link https://github.com/hybula/lookingglass
  */
 
 require __DIR__.'/LookingGlass.php';

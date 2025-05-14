@@ -4,12 +4,13 @@
  *
  * Provides UI and input for the looking glass backend.
  *
- * @copyright 2022 Hybula B.V.
- * @license Mozilla Public License 2.0
- * @version 1.1.0
- * @since File available since release 1.1.0
- * @link https://github.com/hybula/lookingglass
+ * @copyright 2025 Hybula B.V.
+ * * @license Mozilla Public License 2.0
+ * * @version 1.3.6
+ * * @since File available since release 0.1
+ * * @link https://github.com/hybula/lookingglass
  */
+
 use Hybula\LookingGlass;
 
 if (!file_exists(__DIR__ . '/config.php')) {

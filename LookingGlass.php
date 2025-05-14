@@ -6,9 +6,9 @@ declare(strict_types=1);
  *
  * The LookingGlass class provides all functionality.
  *
- * @copyright 2022 Hybula B.V.
+ * @copyright 2025 Hybula B.V.
  * @license Mozilla Public License 2.0
- * @version 0.1
+ * @version 1.3.6
  * @since File available since release 0.1
  * @link https://github.com/hybula/lookingglass
  */
