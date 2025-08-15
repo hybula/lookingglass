@@ -179,7 +179,7 @@ class LookingGlass
      */
     public static function isValidHost(string $host, string $type): string
     {
-        $host = str_replace(['http://', 'https://'], '', $host);
+        $host = str_replace(['http://', 'https://', ';', ',', '\\'], '', $host);
         if (!substr_count($host, '.')) {
             return '';
         }
@@ -229,7 +229,7 @@ class LookingGlass
      */
     public static function ping(string $host, int $count = 4): bool
     {
-        return self::procExecute('ping -4 -c'.$count.' -w15', $host);
+        return self::procExecute(['ping', '-4', '-c', $count, '-w15'], $host);
     }
 
     /**
@@ -241,7 +241,7 @@ class LookingGlass
      */
     public static function ping6(string $host, int $count = 4): bool
     {
-        return self::procExecute('ping -6 -c'.$count.' -w15', $host);
+        return self::procExecute(['ping', '-6', '-c', $count, '-w15'], $host);
     }
 
     /**
@@ -252,7 +252,7 @@ class LookingGlass
      */
     public static function mtr(string $host): bool
     {
-        return self::procExecute('mtr --raw -n -4 -c '.self::MTR_COUNT, $host);
+        return self::procExecute(['mtr', '--raw', '-n', '-4', '-c', self::MTR_COUNT], $host);
     }
 
     /**
@@ -263,7 +263,7 @@ class LookingGlass
      */
     public static function mtr6(string $host): bool
     {
-        return self::procExecute('mtr --raw -n -6 -c '.self::MTR_COUNT, $host);
+        return self::procExecute(['mtr', '--raw', '-n', '-6', '-c', self::MTR_COUNT], $host);
     }
 
     /**
@@ -275,7 +275,7 @@ class LookingGlass
      */
     public static function traceroute(string $host, int $failCount = 4): bool
     {
-        return self::procExecute('traceroute -4 -w2', $host, $failCount);
+        return self::procExecute(['traceroute', '-4', '-w2'], $host, $failCount);
     }
 
     /**
@@ -287,7 +287,7 @@ class LookingGlass
      */
     public static function traceroute6(string $host, int $failCount = 4): bool
     {
-        return self::procExecute('traceroute -6 -w2', $host, $failCount);
+        return self::procExecute(['traceroute', '-6', '-w2'], $host, $failCount);
     }
 
     /**
@@ -301,7 +301,7 @@ class LookingGlass
      * @link https://github.com/telephone/LookingGlass/blob/master/LookingGlass/LookingGlass.php#L172
      * @license https://github.com/telephone/LookingGlass/blob/master/LICENCE.txt
      */
-    private static function procExecute(string $cmd, string $host, int $failCount = 2): bool
+    private static function procExecute(array $cmd, string $host, int $failCount = 2): bool
     {
         // define output pipes
         $spec = [
@@ -313,7 +313,7 @@ class LookingGlass
         // sanitize + remove single quotes
         $host = str_replace('\'', '', filter_var($host, FILTER_SANITIZE_URL));
         // execute command
-        $process = proc_open("{$cmd} '{$host}'", $spec, $pipes, null);
+        $process = proc_open($cmd, $spec, $pipes, null);
 
         // check pipe exists
         if (!is_resource($process)) {
@@ -321,10 +321,10 @@ class LookingGlass
         }
 
         // check for mtr/traceroute
-        if (strpos($cmd, 'mtr') !== false) {
+        if ($cmd[0] == 'mtr' || $cmd[0] == 'mtr6') {
             $type = 'mtr';
             $parser = new Parser();
-        } elseif (strpos($cmd, 'traceroute') !== false) {
+        } elseif ($cmd[0] == 'traceroute' || $cmd[0] == 'traceroute6' ) {
             $type = 'traceroute';
         } else {
             $type = '';

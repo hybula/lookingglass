@@ -18,7 +18,7 @@ made user-friendly for everyone to use. It allows you to execute network related
 
 ## Requirements
 - Any Linux distribution, this has been tested on RHEL 8 + 9, for NetBSD users see [#47](https://github.com/hybula/lookingglass/issues/47).
-- PHP 7.1 or higher, PHP 8 preferred.
+- PHP 7.4 or higher, PHP 8 preferred.
 - IPv6 connectivity if you want to use the v6 equivalents.
 - Root access.
 

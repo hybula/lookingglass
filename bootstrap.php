@@ -17,6 +17,10 @@ if (!file_exists(__DIR__ . '/config.php')) {
     die('config.php is not found, but is required for application to work!');
 }
 
+if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+    die('This script requires PHP 7.4 or higher. Current version: ' . PHP_VERSION);
+}
+
 require __DIR__ . '/LookingGlass.php';
 require __DIR__ . '/config.php';
 
