@@ -294,7 +294,7 @@ class LookingGlass
      * Executes a command and opens pipe for input/output.
      * Directly taken from telephone/LookingGlass (MIT License)
      *
-     * @param  string  $cmd  The command to execute.
+     * @param  array  $cmd  The command to execute.
      * @param  string  $host  The host that is used as param.
      * @param  int  $failCount  Number of consecutive failed hops.
      * @return boolean True on success.
@@ -311,7 +311,8 @@ class LookingGlass
         ];
 
         // sanitize + remove single quotes
-        $host = str_replace('\'', '', filter_var($host, FILTER_SANITIZE_URL));
+        $cmd[] = str_replace('\'', '', filter_var($host, FILTER_SANITIZE_URL));
+
         // execute command
         $process = proc_open($cmd, $spec, $pipes, null);
 
@@ -399,14 +400,16 @@ class LookingGlass
                 fclose($pipe);
             }
             if ($status['pid']) {
-                // retrieve parent pid
-                //$ppid = $status['pid'];
                 // use ps to get all the children of this process
-                $pids = preg_split('/\s+/', 'ps -o pid --no-heading --ppid '.$status['pid']);
-                // kill remaining processes
-                foreach ($pids as $pid) {
-                    if (is_numeric($pid)) {
-                        posix_kill((int)$pid, 9);
+                $psOutput = shell_exec('ps -o pid= --no-heading --ppid ' . (int)$status['pid']);
+                if ($psOutput !== null) {
+                    // Split the output into lines and filter numeric PIDs
+                    $pids = preg_split('/\s+/', trim($psOutput));
+
+                    foreach ($pids as $pid) {
+                        if (is_numeric($pid)) {
+                            posix_kill((int)$pid, 9);
+                        }
                     }
                 }
             }
