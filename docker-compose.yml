@@ -16,6 +16,12 @@ services:
       dockerfile: docker/php-fpm/Dockerfile
     network_mode: host
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "cgi-fcgi -bind -connect localhost:9000 >/dev/null 2>&1 || exit 1"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
     environment:
       # For a better reference as to what these variables do, check out 'config.dist.php' or 'docker/php-fpm/src/config.php'.
       # Please replace them with values that are relevant to your situation!
