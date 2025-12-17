@@ -453,7 +453,7 @@ class LookingGlass
         $ss = [];
         $i = 0;
         $j = 0;
-        foreach (explode(PHP_EOL, $lines) as $line) {
+        foreach (explode(PHP_EOL, $lines ?? '') as $line) {
             if ($i > 1) {
                 $i = 0;
                 $j++;
