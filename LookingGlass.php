@@ -252,7 +252,7 @@ class LookingGlass
      */
     public static function mtr(string $host): bool
     {
-        return self::procExecute(['mtr', '--raw', '-n', '-4', '-c', self::MTR_COUNT], $host);
+        return self::procExecute(['mtr', '--raw', '-4', '--mpls', '-c', self::MTR_COUNT], $host);
     }
 
     /**
@@ -263,7 +263,7 @@ class LookingGlass
      */
     public static function mtr6(string $host): bool
     {
-        return self::procExecute(['mtr', '--raw', '-n', '-6', '-c', self::MTR_COUNT], $host);
+        return self::procExecute(['mtr', '--raw', '-6', '--mpls', '-c', self::MTR_COUNT], $host);
     }
 
     /**
@@ -321,11 +321,16 @@ class LookingGlass
             return false;
         }
 
+        $family = self::IPV4;
+        if (in_array('-6', $cmd)) {
+            $family = self::IPV6;
+        }
+
         // check for mtr/traceroute
-        if ($cmd[0] == 'mtr' || $cmd[0] == 'mtr6') {
+        if ($cmd[0] == 'mtr') {
             $type = 'mtr';
-            $parser = new Parser();
-        } elseif ($cmd[0] == 'traceroute' || $cmd[0] == 'traceroute6' ) {
+            $parser = new Parser($host, $family);
+        } elseif ($cmd[0] == 'traceroute') {
             $type = 'traceroute';
         } else {
             $type = '';
@@ -505,7 +510,7 @@ class Hop
     /** @var int */
     public $idx;
     /** @var string */
-    public $asn = '';
+    public $asn = null;
     /** @var float */
     public $avg = 0.0;
     /** @var int */
@@ -522,14 +527,14 @@ class Hop
     public $best = 0.0;
     /** @var float */
     public $worst = 0.0;
-
     /** @var string[] */
     public $ips = [];
     /** @var string[] */
     public $hosts = [];
     /** @var float[] */
     public $timings = [];
-
+    /** @var MplsInfo[] */
+    public $mplsInfo = [];
 }
 
 class RawHop
@@ -540,6 +545,35 @@ class RawHop
     public $idx;
     /** @var string */
     public $value;
+    /** @var string[] */
+    public $rawValue;
+}
+
+class MplsInfo
+{
+    /** @var int */
+    public $label;
+    /** @var int */
+    public $trafficClass;
+    /** @var int */
+    public $bottomStack;
+    /** @var int */
+    public $ttl;
+
+    public function __construct(int $label, int $trafficClass, int $bottomStack, int $ttl)
+    {
+        $this->label = $label;
+        $this->trafficClass = $trafficClass;
+        $this->bottomStack = $bottomStack;
+        $this->ttl = $ttl;
+    }
+
+    public function __toString(): string
+    {
+        $str = sprintf('[MPLS: Lbl %d TC %d S %d TTL %d]',
+            $this->label, $this->trafficClass, $this->bottomStack, $this->ttl);
+        return $str;
+    }
 }
 
 class Parser
@@ -550,64 +584,125 @@ class Parser
     private $hopCount = 0;
     /** @var int */
     private $outputWidth = 38;
+    /** @var string */
+    private $targetIp = '';
+    /** @var int */
+    private $targetIndex = null;
 
-    public function __construct()
+    public function __construct(string $target, string $family)
     {
+        if (LookingGlass::isValidIpv4($target) || LookingGlass::isValidIpv6($target)) {
+            $this->targetIp = $target;
+        } else {
+            $rrType = ($family === LookingGlass::IPV6 ? DNS_AAAA : DNS_A);
+            $key = ($family === LookingGlass::IPV6 ? 'ipv6' : 'ip');
+            $this->targetIp = @dns_get_record($target, $rrType)[0][$key] ?? '';
+
+            if ($family === LookingGlass::IPV6 && !empty($this->targetIp)) {
+                // Transform DNS result to standard inet_ntop representation, otherwise it wouldn't match.
+                $ipv6Binary = inet_pton($this->targetIp);
+                $this->targetIp = inet_ntop($ipv6Binary);
+            }
+        }
+
         putenv('RES_OPTIONS=retrans:1 retry:1 timeout:1 attempts:1');
     }
 
     public function __toString(): string
     {
         $str = '';
-        foreach ($this->hopsCollection as $index => $hop) {
-            $host = $hop->hosts[0] ?? $hop->ips[0] ?? '???';
+        $filteredHops = $this->filterLastDupeHop();
+        foreach ($filteredHops as $index => $hop) {
+            // Show first hop as 1 instead of 0
+            $index++;
 
-            if (strlen($host) > $this->outputWidth) {
-                $this->outputWidth = strlen($host);
+            $asn = '';
+            $hostAndIp = '';
+            if ($hop->recieved > 0) {
+                $asn = 'AS';
+                if (isset($hop->asn) && $hop->asn !== 0) {
+                    $asn .= $hop->asn;
+                } else {
+                    $asn .= '???';
+                }
+
+                if (isset($hop->hosts[0]) && !in_array($hop->hosts[0], $hop->ips)) {
+                    // Show "example.com (192.0.2.234)" if there's a hostname
+                    $hostAndIp = $hop->hosts[0] . ' (' . $hop->ips[0] . ')';
+                } else {
+                    $hostAndIp = $hop->ips[0];
+                }
+            } else {
+                $hostAndIp = '(waiting for reply)';
             }
 
-            $hop->recieved = count($hop->timings);
-            if (count($hop->timings)) {
+            $currentWidth = strlen($asn) + strlen($hostAndIp);
+            if ($currentWidth > $this->outputWidth) {
+                $this->outputWidth = $currentWidth;
+            }
+
+            if ($hop->recieved > 0) {
                 $hop->last = $hop->timings[count($hop->timings) - 1];
                 $hop->best = $hop->timings[0];
                 $hop->worst = $hop->timings[0];
                 $hop->avg = array_sum($hop->timings) / count($hop->timings);
-            }
 
-            if (count($hop->timings) > 1) {
-                $hop->stdev = $this->stDev($hop->timings);
-            }
-
-            foreach ($hop->timings as $time) {
-                if ($hop->best > $time) {
-                    $hop->best = $time;
+                if ($hop->recieved > 1) {
+                    $hop->stdev = $this->stDev($hop->timings);
                 }
 
-                if ($hop->worst < $time) {
-                    $hop->worst = $time;
+                foreach ($hop->timings as $time) {
+                    if ($hop->best > $time) {
+                        $hop->best = $time;
+                    }
+
+                    if ($hop->worst < $time) {
+                        $hop->worst = $time;
+                    }
+                }
+
+                $hop->loss = $hop->sent ? (100 * ($hop->sent - $hop->recieved)) / $hop->sent : 100;
+                $hop->loss = max(0, $hop->loss);
+
+                $mplsInfoString = '';
+                if (!empty($hop->mplsInfo)) {
+                    foreach ($hop->mplsInfo as $mplsInfo) {
+                        $mplsInfoString .= "\n    " . $mplsInfo->__toString();
+                    }
                 }
             }
-
-            $hop->loss = $hop->sent ? (100 * ($hop->sent - $hop->recieved)) / $hop->sent : 100;
 
             $str = sprintf(
-                "%s%2d.|-- %s%3d.0%%   %3d  %5.1f %5.1f %5.1f %5.1f %5.1f\n",
+                "%s%2d. %s%s%s%s",
                 $str,
                 $index,
-                str_pad($host, $this->outputWidth + 3, ' ', STR_PAD_RIGHT),
-                $hop->loss,
-                $hop->sent,
-                $hop->last,
-                $hop->avg,
-                $hop->best,
-                $hop->worst,
-                $hop->stdev
+                $asn,
+                $asn ? ' ' : '',
+                str_pad($hostAndIp, $this->outputWidth - strlen($asn), ' ', STR_PAD_RIGHT),
+                $hop->recieved > 0 ? '' : "\n",
             );
+
+            if ($hop->recieved > 0) {
+                $str .= sprintf(
+                    "%3d.0%%   %3d  %5.1f %5.1f %5.1f %5.1f %5.1f%s\n",
+                    $hop->loss,
+                    $hop->sent,
+                    $hop->last,
+                    $hop->avg,
+                    $hop->best,
+                    $hop->worst,
+                    $hop->stdev,
+                    $mplsInfoString,
+                );
+            }
         }
 
-        return sprintf("       Host%sLoss%%   Snt   Last   Avg  Best  Wrst StDev\n%s", str_pad('', $this->outputWidth + 7, ' ', STR_PAD_RIGHT), $str);
+        return sprintf("&nbsp;Host%sLoss%%   Snt   Last   Avg  Best  Wrst StDev\n%s",
+            str_pad('', $this->outputWidth + 1, ' ', STR_PAD_RIGHT), $str);
+        // +1 above ($this->outputWidth + 1) is to account for the space between $asn and $hostAndIp.
     }
 
+    // Function to calculate standard deviation (uses sd_square)
     private function stDev(array $array): float
     {
         $sdSquare = function ($x, $mean) {
@@ -623,7 +718,9 @@ class Parser
         //Store each line of output in rawhop structure
         $things = explode(' ', $rawMtrInput);
 
-        if (count($things) !== 3 && (count($things) !== 4 && $things[0] === 'p')) {
+        if (count($things) !== 3 &&
+          (count($things) !== 4 && $things[0] === 'p') &&
+          (count($things) !== 6 && $things[0] === 'm')) {
             return;
         }
 
@@ -631,6 +728,12 @@ class Parser
         $rawHop->dataType = $things[0];
         $rawHop->idx = (int)$things[1];
         $rawHop->value = $things[2];
+        $rawHop->rawValue = array_slice($things, 2);
+
+        if ($this->targetIndex !== null && $this->targetIndex < $rawHop->idx) {
+            // Reached target already
+            return;
+        }
 
         if ($this->hopCount < $rawHop->idx + 1) {
             $this->hopCount = $rawHop->idx + 1;
@@ -643,44 +746,99 @@ class Parser
         $hop = $this->hopsCollection[$rawHop->idx];
         $hop->idx = $rawHop->idx;
         switch ($rawHop->dataType) {
+            // See: https://github.com/traviscross/mtr/blob/master/FORMATS
+            // dnsline – d <pos> <hostname>
+            case 'd':
+                $hop->hosts[] = $rawHop->value;
+                break;
+            // hostline – h <pos> <host IP>
             case 'h':
                 $hop->ips[] = $rawHop->value;
-                $hop->hosts[] = gethostbyaddr($rawHop->value) ?: null;
+                $hop->ips = array_unique($hop->ips);
+
+                if (!isset($hop->asn)) {
+                    $suffix = 'origin.asn.cymru.com';
+                    if (filter_var($hop->ips[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                        $suffix = 'origin6.asn.cymru.com';
+                    }
+
+                    $reversedIp = $this->reverseIp($hop->ips[0]);
+                    $qname = $reversedIp . '.' . $suffix;
+                    $dnsResult = @dns_get_record($qname, DNS_TXT)[0]['txt'] ?? '';
+                    // See: https://www.team-cymru.com/ip-asn-mapping ("DNS" section).
+                    // Set to 0 in case of errors so we avoid querying again.
+                    $hop->asn = explode(' ', $dnsResult)[0] ?: 0;
+                }
+
+                if (in_array($this->targetIp, $hop->ips)) {
+                    $this->targetIndex = $hop->idx;
+
+                    foreach ($this->hopsCollection as $key => $hop) {
+                        if ($key > $this->targetIndex) {
+                            unset($this->hopsCollection[$key]);
+                        }
+                    }
+                }
+
                 break;
-            case 'd':
-                //Not entirely sure if multiple IPs. Better use -n in mtr and resolve later in summarize.
-                //out.Hops[data.idx].Host = append(out.Hops[data.idx].Host, data.value)
+            // mplsline – m <pos> <label> <traffic_class> <bottom_stack> <ttl>
+            case 'm':
+                $hop->mplsInfo[] = new MplsInfo(...array_map('intval', $rawHop->rawValue));
+                $hop->mplsInfo = array_unique($hop->mplsInfo);
                 break;
+            // pingline – p <pos> <pingtime (usec)> <seqnum>
             case 'p':
-                $hop->sent++;
+                $hop->recieved++;
                 $hop->timings[] = (float)$rawHop->value / 1000;
+                break;
+            // xmitline – x <pos> <seqnum>
+            case 'x':
+                $hop->sent++;
                 break;
         }
 
         $this->hopsCollection[$rawHop->idx] = $hop;
-
-        $this->filterLastDupeHop();
     }
 
-    // Function to calculate standard deviation (uses sd_square)
-
-    private function filterLastDupeHop()
+    // filter dupe last hop
+    private function filterLastDupeHop(): array
     {
-        // filter dupe last hop
         $finalIdx = 0;
         $previousIp = '';
+        $newHops = [];
 
-        foreach ($this->hopsCollection as $key => $hop) {
+        $hops = $this->hopsCollection;
+        foreach ($hops as $key => $hop) {
             if (count($hop->ips) && $hop->ips[0] !== $previousIp) {
                 $previousIp = $hop->ips[0];
                 $finalIdx = $key + 1;
             }
         }
 
-        unset($this->hopsCollection[$finalIdx]);
+        $newHops = $hops;
+        foreach ($hops as $key => $hop) {
+            if ($key > $finalIdx) {
+                unset($newHops[$key]);
+            }
+        }
 
-        usort($this->hopsCollection, function ($a, $b) {
-            return $a->idx - $b->idx;
-        });
+        return $newHops;
+    }
+
+    private function reverseIp(string $ip): string
+    {
+        $reversed = '';
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $reversed = implode('.', array_reverse(explode('.', $ip)));
+        }
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $ipBinary = inet_pton($ip);
+            $ipHex = bin2hex($ipBinary);
+            $reversed = implode('.', array_reverse(str_split($ipHex)));
+        }
+
+        return $reversed;
     }
 }
