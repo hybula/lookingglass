@@ -108,6 +108,17 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
     <meta content="Hybula" name="author">
     <title><?php echo $templateData['title'] ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+    .main-container {
+        width: 100%;
+    }
+
+    @media (min-width: 992px) {
+        .main-container {
+            width: 80%;
+        }
+    }
+    </style>
     <?php if ($templateData['custom_css']) { echo '<link href="'.$templateData['custom_css'].'" rel="stylesheet">'; } ?>
     <?php if ($templateData['custom_head']) { echo $templateData['custom_head']; } ?>
 </head>
@@ -115,7 +126,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
 
 <?php echo isset($templateData['custom_header']) ? $templateData['custom_header'] : '' ?>
 
-<div class="col-lg-8 mx-auto p-3 py-md-5">
+<div class="main-container col-lg-8 mx-auto p-3 py-md-5">
 
     <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
             <div class="col-8">
