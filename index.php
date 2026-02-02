@@ -107,7 +107,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
     <meta content="" name="description">
     <meta content="Hybula" name="author">
     <title><?php echo $templateData['title'] ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <?php if ($templateData['custom_css']) { echo '<link href="'.$templateData['custom_css'].'" rel="stylesheet">'; } ?>
     <?php if ($templateData['custom_head']) { echo $templateData['custom_head']; } ?>
 </head>
@@ -243,8 +243,8 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                         <div class="alert alert-danger mt-3" role="alert"><?php echo $templateData['error_message'] ?></div>
                         <?php endif ?>
 
-                        <div class="card card-body bg-dark text-light mt-4" style="display: none;" id="outputCard">
-                            <pre id="outputContent" style="white-space: pre;word-wrap: normal;margin-bottom: 0;padding-bottom: 1rem;"></pre>
+                        <div class="card card-body bg-dark text-light mt-4 d-none" id="outputCard">
+                            <pre id="outputContent" class="mb-0"></pre>
                         </div>
                     </form>
 
@@ -337,7 +337,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
         executeButton.innerText = 'Executing...'
         executeButton.disabled = true
 
-        outputCard.style.display = 'inherit'
+        outputCard.classList.toggle('d-none')
 
         fetch('backend.php')
             .then(async (response) => {
@@ -393,7 +393,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
     }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
 </body>
 </html>
