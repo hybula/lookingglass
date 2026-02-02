@@ -243,8 +243,8 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
                         <div class="alert alert-danger mt-3" role="alert"><?php echo $templateData['error_message'] ?></div>
                         <?php endif ?>
 
-                        <div class="card card-body bg-dark text-light mt-4" style="display: none;" id="outputCard">
-                            <pre id="outputContent" style="white-space: pre;word-wrap: normal;margin-bottom: 0;padding-bottom: 1rem;"></pre>
+                        <div class="card card-body bg-dark text-light mt-4 d-none" id="outputCard">
+                            <pre id="outputContent" class="mb-0"></pre>
                         </div>
                     </form>
 
@@ -337,7 +337,7 @@ $templateData['csrfToken'] = $_SESSION[LookingGlass::SESSION_CSRF] = bin2hex(ran
         executeButton.innerText = 'Executing...'
         executeButton.disabled = true
 
-        outputCard.style.display = 'inherit'
+        outputCard.classList.toggle('d-none')
 
         fetch('backend.php')
             .then(async (response) => {
