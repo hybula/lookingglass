@@ -771,11 +771,13 @@ class Parser
                 }
 
                 if (in_array($this->targetIp, $hop->ips)) {
-                    $this->targetIndex = $hop->idx;
+                    if (!isset($this->targetIndex) || $this->targetIndex > $hop->idx) {
+                        $this->targetIndex = $hop->idx;
 
-                    foreach ($this->hopsCollection as $key => $hop) {
-                        if ($key > $this->targetIndex) {
-                            unset($this->hopsCollection[$key]);
+                        foreach ($this->hopsCollection as $key => $hop) {
+                            if ($key > $this->targetIndex) {
+                                unset($this->hopsCollection[$key]);
+                            }
                         }
                     }
                 }
@@ -817,9 +819,15 @@ class Parser
 
         $newHops = $hops;
         foreach ($hops as $key => $hop) {
-            if ($key > $finalIdx) {
+            if ($key >= $finalIdx) {
                 unset($newHops[$key]);
             }
+        }
+
+        if (!isset($this->targetIndex)) {
+            // Show one "waiting for reply" hop it we haven't reached target yet.
+            $waitingHop = new Hop();
+            $newHops[$finalIdx++] = $waitingHop;
         }
 
         return $newHops;
