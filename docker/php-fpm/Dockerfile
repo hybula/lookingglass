@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-bullseye
+FROM php:8.4-fpm-bookworm
 
 RUN apt-get update && \
     apt-get --no-install-recommends -y install iputils-ping mtr traceroute iproute2 libfcgi-bin && \
